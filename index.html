@@ -190,6 +190,45 @@
             }
         }
     </style>
+    /* Estilos para as habilidades */
+.skills-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    gap: 15px;
+    margin-top: 20px;
+}
+
+.skill-card {
+    background: rgba(30, 0, 60, 0.7);
+    border: 1px solid #6a00ff;
+    border-radius: 8px;
+    padding: 15px;
+    cursor: pointer;
+    transition: all 0.3s;
+}
+
+.skill-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 5px 15px rgba(106, 0, 255, 0.4);
+}
+
+.skill-card h3 {
+    color: #ff00f7;
+    margin-bottom: 10px;
+    font-size: 16px;
+}
+
+.skill-info p {
+    font-size: 12px;
+    margin: 5px 0;
+    color: #e0f7ff;
+}
+
+.skill-cost {
+    margin-top: 10px;
+    color: #00f7ff;
+    font-weight: bold;
+}
 </head>
 <body>
     <div class="game-container">
@@ -216,6 +255,32 @@
         <div class="tabs">
             <div class="tab active" data-tab="inventory">INVENTÁRIO</div>
             <div class="tab" data-tab="skills">HABILIDADES</div>
+            <div class="tab-content" id="skills">
+    <h2>HABILIDADES</h2>
+    <div class="skills-grid">
+        <!-- Habilidade 1 -->
+        <div class="skill-card" onclick="useSkill('huntersSlash')">
+            <h3>🩸 Corte do Caçador</h3>
+            <div class="skill-info">
+                <p>⚔️ Dano que ignora 50% DEF</p>
+                <p>💀 Chance de execução (15%)</p>
+                <div class="skill-cost">🔼 25 MP</div>
+            </div>
+        </div>
+        
+        <!-- Habilidade 2 -->
+        <div class="skill-card" onclick="useSkill('shadowDomination')">
+            <h3>👥 Dominação das Sombras</h3>
+            <div class="skill-info">
+                <p>👻 Invoca soldados sombrios</p>
+                <p>⚡ 1 soldado a cada 2 kills</p>
+                <div class="skill-cost">🔼 50 MP</div>
+            </div>
+        </div>
+        
+        <!-- Adicione as outras 3 habilidades seguindo o mesmo padrão -->
+    </div>
+</div>
             <div class="tab" data-tab="quests">MISSÕES</div>
             <div class="tab" data-tab="shop">LOJA</div>
             <div class="tab" data-tab="battle">BATALHA</div>
@@ -405,3 +470,80 @@
     </script>
 </body>
 </html>
+function unlockSkill(skillName) {
+    if (skills[skillName] && !player.skillsUnlocked[skillName]) {
+        player.skillsUnlocked[skillName] = true;
+        alert(`Habilidade desbloqueada: ${skills[skillName].name}`);
+    }
+}
+
+// Exemplo de uso quando o jogador sobe de nível:
+unlockSkill('shadowDomination');
+.skill-card.locked {
+    opacity: 0.5;
+    filter: grayscale(80%);
+    pointer-events: none;
+}
+const player = {
+    // ... outras propriedades existentes ...
+    mp: 100,
+    maxMP: 100,
+    shadowArmy: [],
+    skillsUnlocked: {
+        huntersSlash: true,
+        shadowDomination: false,
+        // ... outras habilidades inicialmente bloqueadas
+    }
+};
+// Sistema de Habilidades
+const skills = {
+    huntersSlash: {
+        name: "Corte do Caçador",
+        description: "Ataque que ignora 50% da defesa. Chance de executar inimigos fracos.",
+        cost: 25,
+        execute: function(target) {
+            if (player.mp >= this.cost) {
+                player.mp -= this.cost;
+                const baseDamage = player.stats.str * 1.5;
+                const damage = baseDamage - (target.def * 0.5);
+                
+                // Chance de execução
+                if (target.hp < target.maxHp * 0.1 && Math.random() < 0.15) {
+                    return target.maxHp; // Mata instantaneamente
+                }
+                return damage;
+            }
+            return 0;
+        }
+    },
+    
+    shadowDomination: {
+        name: "Dominação das Sombras",
+        description: "Invoca um soldado sombrio a cada 2 inimigos derrotados.",
+        cost: 50,
+        execute: function() {
+            if (player.mp >= this.cost && player.shadowArmy.length < 3) {
+                player.mp -= this.cost;
+                player.shadowArmy.push({
+                    hp: Math.floor(player.stats.maxHp * 0.3),
+                    damage: Math.floor(player.stats.str * 0.3),
+                    duration: 300000 // 5 minutos em ms
+                });
+                return true;
+            }
+            return false;
+        }
+    }
+    // Adicione as outras habilidades aqui
+};
+
+function useSkill(skillName) {
+    const skill = skills[skillName];
+    if (currentTab === 'battle' && skill) {
+        const result = skill.execute(currentEnemy);
+        if (result) {
+            updateBattleLog(`Você usou ${skill.name}!`);
+            enemyTurn();
+        }
+    }
+}
