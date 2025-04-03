@@ -1,549 +1,702 @@
 <!DOCTYPE html>
-<html lang="pt-BR">
+<html lang="pt-br">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SHADOW ASCENSION</title>
+    <title>Reinos Além dos Portais</title>
     <style>
-        /* RESET & FONTE */
-        * { 
-            margin: 0; 
-            padding: 0; 
-            box-sizing: border-box; 
-            font-family: 'Courier New', monospace;
-        }
-        
-        @font-face {
-            font-family: 'PixelFont';
-            src: url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
-        }
-        
         body {
-            background: #0a001a url('https://i.imgur.com/JYq9X2W.png') fixed;
-            color: #e0f7ff;
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
+            font-family: 'Arial', sans-serif;
+            background-color: #1a1a1a;
+            color: #e0e0e0;
+            margin: 0;
             padding: 20px;
         }
-
-        /* CONTAINER PRINCIPAL */
+        
         .game-container {
-            width: 100%;
             max-width: 800px;
-            background: rgba(10, 0, 30, 0.9);
-            border: 2px solid #4d00ff;
-            border-radius: 10px;
-            box-shadow: 0 0 30px #6a00ff;
-            overflow: hidden;
-        }
-
-        /* CABEÇALHO */
-        .header {
-            background: linear-gradient(90deg, #1a0033 0%, #3d0066 100%);
-            padding: 15px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            border-bottom: 2px solid #00f7ff;
-        }
-
-        .player-info {
-            display: flex;
-            gap: 20px;
-        }
-
-        .stat {
-            display: flex;
-            align-items: center;
-            gap: 5px;
-        }
-
-        /* ABAS */
-        .tabs {
-            display: flex;
-            background: rgba(0, 0, 20, 0.7);
-            border-bottom: 1px solid #4d00ff;
-        }
-
-        .tab {
-            padding: 12px 20px;
-            cursor: pointer;
-            transition: all 0.3s;
-            border-right: 1px solid #4d00ff;
-        }
-
-        .tab:hover {
-            background: rgba(77, 0, 255, 0.3);
-        }
-
-        .tab.active {
-            background: #4d00ff;
-            font-weight: bold;
-        }
-
-        /* CONTEÚDO DAS ABAS */
-        .tab-content {
-            display: none;
-            padding: 20px;
-            min-height: 400px;
-        }
-
-        .tab-content.active {
-            display: block;
-            animation: fadeIn 0.5s;
-        }
-
-        @keyframes fadeIn {
-            from { opacity: 0; }
-            to { opacity: 1; }
-        }
-
-        /* INVENTÁRIO */
-        .inventory-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 15px;
-        }
-
-        .equipment-column, .inventory-column {
-            background: rgba(0, 0, 30, 0.5);
-            border: 1px solid #4d00ff;
-            border-radius: 5px;
-            padding: 15px;
-        }
-
-        .slot {
-            border: 1px dashed #4d00ff;
-            padding: 10px;
-            margin-bottom: 10px;
-            border-radius: 3px;
-            transition: all 0.3s;
-        }
-
-        .slot:hover {
-            background: rgba(77, 0, 255, 0.2);
-        }
-
-        /* LOJA */
-        .shop-items {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
-            gap: 15px;
-        }
-
-        .shop-item {
-            background: rgba(0, 0, 30, 0.5);
-            border: 1px solid #4d00ff;
-            border-radius: 5px;
-            padding: 15px;
-        }
-
-        /* BATALHA */
-        .battle-screen {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 20px;
-        }
-
-        .enemy-display {
-            background: rgba(255, 50, 50, 0.2);
-            border: 2px solid #ff5555;
+            margin: 0 auto;
+            background-color: #2a2a2a;
             border-radius: 10px;
             padding: 20px;
-            width: 80%;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+        }
+        
+        h1, h2, h3 {
+            color: #f0f0f0;
             text-align: center;
         }
-
-        /* BOTÕES */
-        .btn {
-            background: #4d00ff;
+        
+        .player-section, .enemy-section, .battle-section, .inventory-section, .shop-section, .portal-section {
+            background-color: #333;
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 20px;
+        }
+        
+        .status-bar {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+        }
+        
+        .hp-bar, .mp-bar {
+            height: 20px;
+            border-radius: 5px;
+            overflow: hidden;
+            background-color: #444;
+            margin-bottom: 5px;
+        }
+        
+        .hp-fill {
+            height: 100%;
+            background-color: #e74c3c;
+            width: 100%;
+            transition: width 0.3s;
+        }
+        
+        .mp-fill {
+            height: 100%;
+            background-color: #3498db;
+            width: 100%;
+            transition: width 0.3s;
+        }
+        
+        .skills button, .battle-actions button, .portal-button {
+            background-color: #4a4a4a;
             color: white;
             border: none;
-            padding: 10px 15px;
+            padding: 8px 12px;
+            margin: 5px;
             border-radius: 5px;
             cursor: pointer;
-            transition: all 0.3s;
-            font-family: 'PixelFont', sans-serif;
+            transition: background-color 0.2s;
         }
-
-        .btn:hover {
-            background: #6a00ff;
-            box-shadow: 0 0 10px #6a00ff;
+        
+        .skills button:hover, .battle-actions button:hover, .portal-button:hover {
+            background-color: #5a5a5a;
         }
-
-        /* RESPONSIVO */
-        @media (max-width: 600px) {
-            .inventory-grid {
-                grid-template-columns: 1fr;
-            }
-            
-            .tabs {
-                flex-wrap: wrap;
-            }
-            
-            .tab {
-                flex: 1;
-                text-align: center;
-            }
+        
+        .skills button:disabled, .battle-actions button:disabled {
+            background-color: #3a3a3a;
+            color: #777;
+            cursor: not-allowed;
+        }
+        
+        .inventory-grid, .shop-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+        }
+        
+        .item-card {
+            background-color: #3a3a3a;
+            padding: 10px;
+            border-radius: 5px;
+            text-align: center;
+        }
+        
+        .item-card img {
+            width: 50px;
+            height: 50px;
+            object-fit: contain;
+        }
+        
+        .log {
+            height: 150px;
+            overflow-y: auto;
+            background-color: #222;
+            padding: 10px;
+            border-radius: 5px;
+            margin-top: 10px;
+        }
+        
+        .log-entry {
+            margin-bottom: 5px;
+            padding-bottom: 5px;
+            border-bottom: 1px solid #444;
+        }
+        
+        .critical {
+            color: #ffcc00;
+            font-weight: bold;
+        }
+        
+        .heal {
+            color: #2ecc71;
+        }
+        
+        .damage {
+            color: #e74c3c;
+        }
+        
+        .tab-buttons {
+            display: flex;
+            margin-bottom: 10px;
+        }
+        
+        .tab-button {
+            padding: 8px 15px;
+            background-color: #3a3a3a;
+            border: none;
+            color: white;
+            cursor: pointer;
+            margin-right: 5px;
+            border-radius: 5px 5px 0 0;
+        }
+        
+        .tab-button.active {
+            background-color: #4a4a4a;
+        }
+        
+        .tab-content {
+            display: none;
+        }
+        
+        .tab-content.active {
+            display: block;
         }
     </style>
-    /* Estilos para as habilidades */
-.skills-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-    gap: 15px;
-    margin-top: 20px;
-}
-
-.skill-card {
-    background: rgba(30, 0, 60, 0.7);
-    border: 1px solid #6a00ff;
-    border-radius: 8px;
-    padding: 15px;
-    cursor: pointer;
-    transition: all 0.3s;
-}
-
-.skill-card:hover {
-    transform: translateY(-3px);
-    box-shadow: 0 5px 15px rgba(106, 0, 255, 0.4);
-}
-
-.skill-card h3 {
-    color: #ff00f7;
-    margin-bottom: 10px;
-    font-size: 16px;
-}
-
-.skill-info p {
-    font-size: 12px;
-    margin: 5px 0;
-    color: #e0f7ff;
-}
-
-.skill-cost {
-    margin-top: 10px;
-    color: #00f7ff;
-    font-weight: bold;
-}
 </head>
 <body>
     <div class="game-container">
-        <!-- CABEÇALHO -->
-        <div class="header">
-            <h1>SHADOW ASCENSION</h1>
-            <div class="player-info">
-                <div class="stat">
-                    <span>LVL:</span>
-                    <span id="playerLevel">1</span>
+        <h1>Reinos Além dos Portais</h1>
+        
+        <div class="player-section">
+            <h2>Herói</h2>
+            <div class="status-bar">
+                <div>
+                    <p>Level: <span id="player-level">1</span></p>
+                    <p>EXP: <span id="player-exp">0</span>/<span id="player-next-exp">100</span></p>
                 </div>
-                <div class="stat">
-                    <span>GOLD:</span>
-                    <span id="playerGold">1000</span>
-                </div>
-                <div class="stat">
-                    <span>HP:</span>
-                    <span id="playerHp">50/50</span>
+                <div>
+                    <p>Ouro: <span id="player-gold">100</span></p>
                 </div>
             </div>
-        </div>
-
-        <!-- ABAS -->
-        <div class="tabs">
-            <div class="tab active" data-tab="inventory">INVENTÁRIO</div>
-            <div class="tab" data-tab="skills">HABILIDADES</div>
-            <div class="tab-content" id="skills">
-    <h2>HABILIDADES</h2>
-    <div class="skills-grid">
-        <!-- Habilidade 1 -->
-        <div class="skill-card" onclick="useSkill('huntersSlash')">
-            <h3>🩸 Corte do Caçador</h3>
-            <div class="skill-info">
-                <p>⚔️ Dano que ignora 50% DEF</p>
-                <p>💀 Chance de execução (15%)</p>
-                <div class="skill-cost">🔼 25 MP</div>
+            
+            <div class="hp-bar">
+                <div class="hp-fill" id="player-hp-bar"></div>
+            </div>
+            <p>HP: <span id="player-hp">100</span>/<span id="player-max-hp">100</span></p>
+            
+            <div class="mp-bar">
+                <div class="mp-fill" id="player-mp-bar"></div>
+            </div>
+            <p>MP: <span id="player-mp">50</span>/<span id="player-max-mp">50</span></p>
+            
+            <h3>Atributos</h3>
+            <div class="attributes">
+                <p>Força: <span id="player-str">5</span> <button onclick="increaseStat('str')">+</button></p>
+                <p>Defesa: <span id="player-def">5</span> <button onclick="increaseStat('def')">+</button></p>
+                <p>Inteligência: <span id="player-int">5</span> <button onclick="increaseStat('int')">+</button></p>
+                <p>Velocidade: <span id="player-spd">5</span> <button onclick="increaseStat('spd')">+</button></p>
+                <p>Pontos disponíveis: <span id="stat-points">0</span></p>
+            </div>
+            
+            <h3>Equipamento</h3>
+            <div class="equipment">
+                <p>Arma: <span id="equip-weapon">Nenhuma</span></p>
+                <p>Armadura: <span id="equip-armor">Nenhuma</span></p>
             </div>
         </div>
         
-        <!-- Habilidade 2 -->
-        <div class="skill-card" onclick="useSkill('shadowDomination')">
-            <h3>👥 Dominação das Sombras</h3>
-            <div class="skill-info">
-                <p>👻 Invoca soldados sombrios</p>
-                <p>⚡ 1 soldado a cada 2 kills</p>
-                <div class="skill-cost">🔼 50 MP</div>
-            </div>
+        <div class="tab-buttons">
+            <button class="tab-button active" onclick="openTab('battle')">Batalha</button>
+            <button class="tab-button" onclick="openTab('skills')">Habilidades</button>
+            <button class="tab-button" onclick="openTab('inventory')">Inventário</button>
+            <button class="tab-button" onclick="openTab('shop')">Loja</button>
+            <button class="tab-button" onclick="openTab('quests')">Missões</button>
         </div>
         
-        <!-- Adicione as outras 3 habilidades seguindo o mesmo padrão -->
-    </div>
-</div>
-            <div class="tab" data-tab="quests">MISSÕES</div>
-            <div class="tab" data-tab="shop">LOJA</div>
-            <div class="tab" data-tab="battle">BATALHA</div>
-        </div>
-
-        <!-- CONTEÚDO DAS ABAS -->
-        <div class="tab-content active" id="inventory">
-            <div class="inventory-grid">
-                <div class="equipment-column">
-                    <h3>EQUIPAMENTO</h3>
-                    <div class="slot" id="weapon-slot">
-                        <h4>ARMA</h4>
-                        <p>Nenhuma equipada</p>
-                    </div>
-                    <div class="slot" id="armor-slot">
-                        <h4>ARMADURA</h4>
-                        <p>Nenhuma equipada</p>
-                    </div>
-                    <div class="slot" id="accessory-slot">
-                        <h4>ACESSÓRIO</h4>
-                        <p>Nenhum equipado</p>
-                    </div>
+        <div id="battle" class="tab-content active">
+            <div class="battle-section">
+                <h2>Batalha</h2>
+                <div id="enemy-display">
+                    <p>Nenhum inimigo encontrado. Entre em um portal para começar!</p>
                 </div>
-                <div class="inventory-column">
-                    <h3>INVENTÁRIO</h3>
-                    <div id="inventory-items">
-                        <div class="slot">
-                            <h4>Poção de Cura</h4>
-                            <p>Restaura 20 HP</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <div class="tab-content" id="skills">
-            <h2>HABILIDADES</h2>
-            <p>Sistema de habilidades em desenvolvimento...</p>
-        </div>
-
-        <div class="tab-content" id="quests">
-            <h2>MISSÕES ATIVAS</h2>
-            <div class="quest">
-                <h3>Derrote o Goblin Chefe</h3>
-                <p>Recompensa: 1500 Gold</p>
-                <progress value="0" max="100"></progress>
-            </div>
-        </div>
-
-        <div class="tab-content" id="shop">
-            <h2>LOJA DO KAMISH</h2>
-            <div class="shop-items">
-                <div class="shop-item">
-                    <h3>ADAGA PRESAS DE KAMISH</h3>
-                    <p>+55 Ataque</p>
-                    <p>Preço: 1000 Gold</p>
-                    <button class="btn buy-btn">COMPRAR</button>
-                </div>
-                <div class="shop-item">
-                    <h3>ARMADURA DE COURO</h3>
-                    <p>+3 Defesa</p>
-                    <p>Preço: 800 Gold</p>
-                    <button class="btn buy-btn">COMPRAR</button>
-                </div>
-            </div>
-        </div>
-
-        <div class="tab-content" id="battle">
-            <div class="battle-screen">
-                <div class="enemy-display">
-                    <h2>GOBLIN FILHOTE</h2>
-                    <p>HP: <span id="enemyHp">30/30</span></p>
-                    <progress value="30" max="30"></progress>
-                </div>
+                
                 <div class="battle-actions">
-                    <button class="btn battle-btn" id="attack-btn">ATACAR</button>
-                    <button class="btn battle-btn" id="skill-btn">HABILIDADE</button>
-                    <button class="btn battle-btn" id="item-btn">ITEM</button>
+                    <h3>Ações</h3>
+                    <button onclick="playerAttack()">Atacar</button>
+                    <button onclick="useSkill(0)">Golpe Certeiro (5 MP)</button>
+                    <button onclick="useSkill(1)">Escudo Mágico (10 MP)</button>
+                    <button onclick="useSkill(2)">Tempestade de Aço (15 MP)</button>
+                    <button onclick="useSkill(3)">Cura Divina (20 MP)</button>
+                    <button onclick="useSkill(4)">Golpe Crítico (25 MP)</button>
+                </div>
+                
+                <div class="log" id="battle-log">
+                    <div class="log-entry">Bem-vindo ao Reinos Além dos Portais!</div>
+                </div>
+            </div>
+            
+            <div class="portal-section">
+                <h2>Portais</h2>
+                <p>Selecione um portal para encontrar inimigos:</p>
+                <button class="portal-button" onclick="enterPortal('E')">Portal Rank E</button>
+                <button class="portal-button" onclick="enterPortal('D')">Portal Rank D</button>
+                <button class="portal-button" onclick="enterPortal('C')">Portal Rank C</button>
+                <button class="portal-button" onclick="enterPortal('B')">Portal Rank B</button>
+                <button class="portal-button" onclick="enterPortal('A')">Portal Rank A</button>
+                <button class="portal-button" onclick="enterPortal('S')">Portal Rank S</button>
+                <button class="portal-button" onclick="enterPortal('SS')">Portal Rank SS</button>
+            </div>
+        </div>
+        
+        <div id="skills" class="tab-content">
+            <h2>Habilidades</h2>
+            <div class="skills">
+                <div class="skill">
+                    <h3>Golpe Certeiro</h3>
+                    <p>Custo: 5 MP</p>
+                    <p>Dano físico simples (100% do ataque).</p>
+                </div>
+                <div class="skill">
+                    <h3>Escudo Mágico</h3>
+                    <p>Custo: 10 MP</p>
+                    <p>Reduz próximo ataque em 50%.</p>
+                </div>
+                <div class="skill">
+                    <h3>Tempestade de Aço</h3>
+                    <p>Custo: 15 MP</p>
+                    <p>Ataque 3x com 70% do dano.</p>
+                </div>
+                <div class="skill">
+                    <h3>Cura Divina</h3>
+                    <p>Custo: 20 MP</p>
+                    <p>Restaura 30% do HP máximo.</p>
+                </div>
+                <div class="skill">
+                    <h3>Golpe Crítico</h3>
+                    <p>Custo: 25 MP</p>
+                    <p>Ataque com 200% de dano e ignora 30% da defesa.</p>
+                </div>
+            </div>
+        </div>
+        
+        <div id="inventory" class="tab-content">
+            <h2>Inventário</h2>
+            <div class="inventory-grid" id="inventory-items">
+                <!-- Itens serão gerados dinamicamente -->
+            </div>
+        </div>
+        
+        <div id="shop" class="tab-content">
+            <h2>Loja</h2>
+            <div class="shop-grid" id="shop-items">
+                <!-- Itens da loja serão gerados dinamicamente -->
+            </div>
+        </div>
+        
+        <div id="quests" class="tab-content">
+            <h2>Missões</h2>
+            <div id="daily-quests">
+                <h3>Missões Diárias</h3>
+                <div class="quest">
+                    <p>Derrote 5 Goblins</p>
+                    <p>Progresso: <span id="quest-goblins">0</span>/5</p>
+                    <p>Recompensa: 500 Ouro + Poção de Cura</p>
+                </div>
+                <div class="quest">
+                    <p>Colete 10 Cristais</p>
+                    <p>Progresso: <span id="quest-crystals">0</span>/10</p>
+                    <p>Recompensa: 1000 Ouro + Escudo de Ferro</p>
+                </div>
+                <div class="quest">
+                    <p>Mate um Boss Rank B</p>
+                    <p>Progresso: <span id="quest-boss">0</span>/1</p>
+                    <p>Recompensa: 3000 Ouro + Espada Flamejante</p>
                 </div>
             </div>
         </div>
     </div>
 
     <script>
-        // Variáveis do jogo
-        const gameState = {
-            currentTab: 'inventory',
-            player: {
-                name: 'Caçador',
-                level: 1,
-                gold: 1000,
-                hp: 50,
-                maxHp: 50,
-                inventory: [
-                    { name: 'Poção de Cura', type: 'item', effect: 'heal', value: 20 }
-                ],
-                equipment: {
-                    weapon: null,
-                    armor: null,
-                    accessory: null
-                }
+        // Dados do Jogador
+        const player = {
+            level: 1,
+            exp: 0,
+            nextExp: 100,
+            gold: 100,
+            stats: {
+                str: 5,
+                def: 5,
+                int: 5,
+                spd: 5
             },
-            enemy: {
-                name: 'Goblin Filhote',
-                hp: 30,
-                maxHp: 30,
-                attack: 5
+            statPoints: 0,
+            hp: 100,
+            maxHp: 100,
+            mp: 50,
+            maxMp: 50,
+            equipment: {
+                weapon: null,
+                armor: null
+            },
+            inventory: [],
+            skills: [
+                { name: "Golpe Certeiro", cost: 5, description: "Dano físico simples (100% do ataque)." },
+                { name: "Escudo Mágico", cost: 10, description: "Reduz próximo ataque em 50%." },
+                { name: "Tempestade de Aço", cost: 15, description: "Ataque 3x com 70% do dano." },
+                { name: "Cura Divina", cost: 20, description: "Restaura 30% do HP máximo." },
+                { name: "Golpe Crítico", cost: 25, description: "Ataque com 200% de dano e ignora 30% da defesa." }
+            ],
+            activeShield: false,
+            questProgress: {
+                goblins: 0,
+                crystals: 0,
+                boss: 0
             }
         };
 
-        // Elementos da UI
-        const tabs = document.querySelectorAll('.tab');
-        const tabContents = document.querySelectorAll('.tab-content');
+        // Dados dos Inimigos por Rank
+        const enemiesByRank = {
+            'E': [
+                { name: "Goblin", hp: 30, atk: 5, def: 2, exp: 20, gold: 10, drops: [{ id: 1, chance: 0.3 }] },
+                { name: "Slime", hp: 40, atk: 3, def: 1, exp: 15, gold: 5, drops: [{ id: 2, chance: 0.2 }] },
+                { name: "Aranha Pequena", hp: 25, atk: 6, def: 0, exp: 25, gold: 8, drops: [{ id: 3, chance: 0.25 }] }
+            ],
+            'D': [
+                { name: "Lobo", hp: 60, atk: 8, def: 3, exp: 40, gold: 20, drops: [{ id: 4, chance: 0.3 }] },
+                { name: "Esqueleto", hp: 50, atk: 10, def: 5, exp: 45, gold: 25, drops: [{ id: 5, chance: 0.35 }] }
+            ],
+            'C': [
+                { name: "Orc", hp: 90, atk: 12, def: 8, exp: 70, gold: 40, drops: [{ id: 6, chance: 0.4 }] },
+                { name: "Aranha Gigante", hp: 70, atk: 15, def: 5, exp: 65, gold: 35, drops: [{ id: 7, chance: 0.35 }] }
+            ],
+            'B': [
+                { name: "Minotauro", hp: 150, atk: 20, def: 15, exp: 120, gold: 80, drops: [{ id: 8, chance: 0.5 }] },
+                { name: "Necromante", hp: 100, atk: 25, def: 10, exp: 150, gold: 100, drops: [{ id: 9, chance: 0.45 }] }
+            ],
+            'A': [
+                { name: "Demônio", hp: 200, atk: 30, def: 20, exp: 200, gold: 150, drops: [{ id: 10, chance: 0.6 }] },
+                { name: "Dragão Jovem", hp: 250, atk: 35, def: 25, exp: 250, gold: 200, drops: [{ id: 11, chance: 0.55 }] }
+            ],
+            'S': [
+                { name: "Anjo Caído", hp: 350, atk: 45, def: 30, exp: 350, gold: 300, drops: [{ id: 12, chance: 0.7 }] },
+                { name: "Titã", hp: 400, atk: 50, def: 35, exp: 400, gold: 350, drops: [{ id: 13, chance: 0.65 }] }
+            ],
+            'SS': [
+                { name: "Arauto do Fim", hp: 600, atk: 70, def: 50, exp: 800, gold: 500, drops: [{ id: 14, chance: 0.8 }] },
+                { name: "Dragão Ancestral", hp: 1000, atk: 80, def: 60, exp: 1500, gold: 1000, drops: [{ id: 15, chance: 1 }] }
+            ]
+        };
 
-        // Funções
-        function switchTab(tabId) {
-            // Atualiza estado
-            gameState.currentTab = tabId;
+        // Itens do Jogo (30 itens)
+        const items = [
+            // Armas (15 itens)
+            { id: 1, name: "Adaga de Goblin", type: "weapon", level: 1, atk: 10, price: 50 },
+            { id: 2, name: "Espada de Madeira", type: "weapon", level: 1, atk: 12, price: 60 },
+            { id: 3, name: "Cajado do Aprendiz", type: "weapon", level: 1, atk: 8, price: 40 },
+            { id: 4, name: "Espada de Aço", type: "weapon", level: 10, atk: 35, crit: 5, price: 200 },
+            { id: 5, name: "Machado de Batalha", type: "weapon", level: 15, atk: 45, price: 300 },
+            { id: 6, name: "Arco Longo", type: "weapon", level: 20, atk: 50, crit: 8, price: 400 },
+            { id: 7, name: "Lâmina do Caos", type: "weapon", level: 30, atk: 80, crit: 10, price: 1000 },
+            { id: 8, name: "Martelo de Guerra", type: "weapon", level: 35, atk: 90, price: 1200 },
+            { id: 9, name: "Espada Flamejante", type: "weapon", level: 40, atk: 100, crit: 15, price: 1500 },
+            { id: 10, name: "Garra do Dragão", type: "weapon", level: 50, atk: 120, crit: 20, price: 2000 },
+            { id: 11, name: "Lâmina Lunar", type: "weapon", level: 60, atk: 150, crit: 25, price: 3000 },
+            { id: 12, name: "Espada Sagrada", type: "weapon", level: 70, atk: 180, crit: 30, price: 4000 },
+            { id: 13, name: "Foice da Morte", type: "weapon", level: 80, atk: 220, crit: 35, price: 5000 },
+            { id: 14, name: "Martelo Celestial", type: "weapon", level: 90, atk: 250, crit: 40, price: 6000 },
+            { id: 15, name: "Espada do Apocalipse", type: "weapon", level: 100, atk: 300, crit: 50, price: 10000 },
             
-            // Atualiza UI
-            tabs.forEach(tab => {
-                tab.classList.toggle('active', tab.dataset.tab === tabId);
-            });
+            // Armaduras (10 itens)
+            { id: 16, name: "Couro Rústico", type: "armor", level: 1, def: 5, price: 40 },
+            { id: 17, name: "Túnica do Aprendiz", type: "armor", level: 5, def: 10, price: 80 },
+            { id: 18, name: "Armadura de Ferro", type: "armor", level: 15, def: 25, price: 300 },
+            { id: 19, name: "Cota de Malha", type: "armor", level: 25, def: 40, price: 600 },
+            { id: 20, name: "Armadura de Placas", type: "armor", level: 35, def: 60, price: 1000 },
+            { id: 21, name: "Manto das Sombras", type: "armor", level: 45, def: 80, price: 1500 },
+            { id: 22, name: "Armadura de Mithril", type: "armor", level: 55, def: 100, price: 2000 },
+            { id: 23, name: "Armadura Sagrada", type: "armor", level: 70, def: 120, price: 3000 },
+            { id: 24, name: "Armadura do Dragão", type: "armor", level: 80, def: 150, price: 4000 },
+            { id: 25, name: "Vestimenta do Eclipse", type: "armor", level: 90, def: 200, price: 5000 },
             
-            tabContents.forEach(content => {
-                content.classList.toggle('active', content.id === tabId);
-            });
+            // Poções (5 itens)
+            { id: 26, name: "Poção de Cura", type: "potion", effect: "heal", amount: 50, price: 20 },
+            { id: 27, name: "Poção de Mana", type: "potion", effect: "mana", amount: 30, price: 30 },
+            { id: 28, name: "Poção de Força", type: "potion", effect: "str", amount: 5, price: 50 },
+            { id: 29, name: "Poção de Defesa", type: "potion", effect: "def", amount: 5, price: 50 },
+            { id: 30, name: "Poção de Velocidade", type: "potion", effect: "spd", amount: 5, price: 50 }
+        ];
+
+        // Estado da Batalha
+        let currentEnemy = null;
+        let playerTurn = true;
+        let battleLog = [];
+
+        // Inicialização do Jogo
+        function initGame() {
+            updatePlayerStats();
+            renderInventory();
+            renderShop();
+            updateQuests();
         }
 
+        // Atualiza a exibição dos status do jogador
         function updatePlayerStats() {
-            document.getElementById('playerLevel').textContent = gameState.player.level;
-            document.getElementById('playerGold').textContent = gameState.player.gold;
-            document.getElementById('playerHp').textContent = 
-                `${gameState.player.hp}/${gameState.player.maxHp}`;
+            document.getElementById('player-level').textContent = player.level;
+            document.getElementById('player-exp').textContent = player.exp;
+            document.getElementById('player-next-exp').textContent = player.nextExp;
+            document.getElementById('player-gold').textContent = player.gold;
+            
+            document.getElementById('player-hp').textContent = player.hp;
+            document.getElementById('player-max-hp').textContent = player.maxHp;
+            document.getElementById('player-hp-bar').style.width = `${(player.hp / player.maxHp) * 100}%`;
+            
+            document.getElementById('player-mp').textContent = player.mp;
+            document.getElementById('player-max-mp').textContent = player.maxMp;
+            document.getElementById('player-mp-bar').style.width = `${(player.mp / player.maxMp) * 100}%`;
+            
+            document.getElementById('player-str').textContent = player.stats.str;
+            document.getElementById('player-def').textContent = player.stats.def;
+            document.getElementById('player-int').textContent = player.stats.int;
+            document.getElementById('player-spd').textContent = player.stats.spd;
+            document.getElementById('stat-points').textContent = player.statPoints;
+            
+            document.getElementById('equip-weapon').textContent = player.equipment.weapon ? player.equipment.weapon.name : "Nenhuma";
+            document.getElementById('equip-armor').textContent = player.equipment.armor ? player.equipment.armor.name : "Nenhuma";
         }
 
-        function attackEnemy() {
-            const damage = 10; // Dano base
-            gameState.enemy.hp -= damage;
-            
-            if (gameState.enemy.hp <= 0) {
-                gameState.enemy.hp = 0;
-                alert(`Você derrotou ${gameState.enemy.name} e ganhou 100 Gold!`);
-                gameState.player.gold += 100;
-                gameState.enemy.hp = gameState.enemy.maxHp;
+        // Entra em um portal e encontra um inimigo
+        function enterPortal(rank) {
+            const possibleEnemies = enemiesByRank[rank];
+            if (!possibleEnemies || possibleEnemies.length === 0) {
+                addLog("Portal vazio... talvez você precise desbloquear este rank primeiro.");
+                return;
             }
             
-            updateBattleUI();
+            const randomIndex = Math.floor(Math.random() * possibleEnemies.length);
+            currentEnemy = JSON.parse(JSON.stringify(possibleEnemies[randomIndex]));
             
-            // Ataque do inimigo
-            setTimeout(() => {
-                if (gameState.enemy.hp > 0) {
-                    const enemyDamage = gameState.enemy.attack;
-                    gameState.player.hp -= enemyDamage;
+            // Determina quem começa baseado na velocidade
+            const playerSpeed = player.stats.spd;
+            const enemySpeed = Math.floor(currentEnemy.hp / 10); // Velocidade aproximada do inimigo
+            
+            playerTurn = playerSpeed >= enemySpeed;
+            
+            renderEnemy();
+            addLog(`Você encontrou um ${currentEnemy.name}! ${playerTurn ? "Você ataca primeiro!" : "O inimigo ataca primeiro!"}`);
+        }
+
+        // Renderiza o inimigo na tela
+        function renderEnemy() {
+            if (!currentEnemy) {
+                document.getElementById('enemy-display').innerHTML = "<p>Nenhum inimigo encontrado. Entre em um portal para começar!</p>";
+                return;
+            }
+            
+            const enemyHTML = `
+                <h3>${currentEnemy.name}</h3>
+                <p>HP: ${currentEnemy.hp}</p>
+                <div class="hp-bar">
+                    <div class="hp-fill" style="width: ${(currentEnemy.hp / (currentEnemy.hp * 2)) * 100}%"></div>
+                </div>
+                <p>Rank: ${Object.keys(enemiesByRank).find(rank => 
+                    enemiesByRank[rank].some(e => e.name === currentEnemy.name))}</p>
+            `;
+            
+            document.getElementById('enemy-display').innerHTML = enemyHTML;
+        }
+
+        // Ataque básico do jogador
+        function playerAttack() {
+            if (!currentEnemy || !playerTurn) return;
+            
+            const baseDamage = player.stats.str * 2 + (player.equipment.weapon ? player.equipment.weapon.atk : 0);
+            const critChance = player.stats.int * 0.5 + (player.equipment.weapon ? (player.equipment.weapon.crit || 0) : 0);
+            const isCrit = Math.random() * 100 < critChance;
+            
+            let damage = baseDamage;
+            if (isCrit) damage *= 2;
+            
+            // Aplica defesa do inimigo
+            damage = Math.max(1, damage - currentEnemy.def);
+            
+            currentEnemy.hp -= damage;
+            if (currentEnemy.hp < 0) currentEnemy.hp = 0;
+            
+            addLog(`Você atacou o ${currentEnemy.name} causando ${damage} de dano${isCrit ? " (CRÍTICO!)" : ""}.`, isCrit ? "critical" : "damage");
+            
+            // Atualiza progresso de missões
+            if (currentEnemy.name.includes("Goblin")) {
+                player.questProgress.goblins++;
+                updateQuests();
+            }
+            
+            if (currentEnemy.hp <= 0) {
+                enemyDefeated();
+            } else {
+                playerTurn = false;
+                setTimeout(enemyTurn, 1000);
+            }
+            
+            renderEnemy();
+        }
+
+        // Inimigo ataca
+        function enemyTurn() {
+            if (!currentEnemy || playerTurn) return;
+            
+            let damage = currentEnemy.atk;
+            
+            // Aplica defesa do jogador
+            const playerDefense = player.stats.def * 1.5 + (player.equipment.armor ? player.equipment.armor.def : 0);
+            damage = Math.max(1, damage - playerDefense);
+            
+            // Verifica se o jogador tem escudo ativo
+            if (player.activeShield) {
+                damage = Math.floor(damage * 0.5);
+                player.activeShield = false;
+                addLog("Seu Escudo Mágico reduziu o dano recebido!", "heal");
+            }
+            
+            player.hp -= damage;
+            if (player.hp < 0) player.hp = 0;
+            
+            addLog(`O ${currentEnemy.name} atacou você causando ${damage} de dano.`, "damage");
+            
+            if (player.hp <= 0) {
+                playerDefeated();
+            } else {
+                playerTurn = true;
+            }
+            
+            updatePlayerStats();
+        }
+
+        // Usa uma habilidade
+        function useSkill(skillIndex) {
+            if (!currentEnemy || !playerTurn) return;
+            
+            const skill = player.skills[skillIndex];
+            if (player.mp < skill.cost) {
+                addLog("MP insuficiente para usar esta habilidade!");
+                return;
+            }
+            
+            player.mp -= skill.cost;
+            
+            switch (skillIndex) {
+                case 0: // Golpe Certeiro
+                    const baseDamage = (player.stats.str * 2 + (player.equipment.weapon ? player.equipment.weapon.atk : 0)) * 1.0;
+                    let damage = Math.max(1, baseDamage - currentEnemy.def);
+                    currentEnemy.hp -= damage;
+                    addLog(`Você usou Golpe Certeiro causando ${damage} de dano.`, "damage");
+                    break;
                     
-                    if (gameState.player.hp <= 0) {
-                        gameState.player.hp = 0;
-                        alert('Você foi derrotado!');
-                        gameState.player.hp = gameState.player.maxHp;
+                case 1: // Escudo Mágico
+                    player.activeShield = true;
+                    addLog("Você conjurou um Escudo Mágico que reduzirá o próximo dano pela metade!", "heal");
+                    playerTurn = true; // Permite outra ação
+                    break;
+                    
+                case 2: // Tempestade de Aço
+                    const hits = 3;
+                    let totalDamage = 0;
+                    for (let i = 0; i < hits; i++) {
+                        const hitDamage = Math.max(1, (player.stats.str * 2 * 0.7) - currentEnemy.def);
+                        currentEnemy.hp -= hitDamage;
+                        totalDamage += hitDamage;
                     }
+                    addLog(`Você usou Tempestade de Aço, atingindo o inimigo ${hits} vezes por um total de ${totalDamage} de dano!`, "damage");
+                    break;
                     
-                    updatePlayerStats();
-                }
-            }, 500);
-        }
-
-        function updateBattleUI() {
-            const enemyHpElement = document.getElementById('enemyHp');
-            enemyHpElement.textContent = `${gameState.enemy.hp}/${gameState.enemy.maxHp}`;
+                case 3: // Cura Divina
+                    const healAmount = Math.floor(player.maxHp * 0.3);
+                    player.hp = Math.min(player.maxHp, player.hp + healAmount);
+                    addLog(`Você usou Cura Divina e recuperou ${healAmount} de HP!`, "heal");
+                    playerTurn = true; // Permite outra ação
+                    break;
+                    
+                case 4: // Golpe Crítico
+                    const critDamage = (player.stats.str * 2 * 2) - Math.floor(currentEnemy.def * 0.7);
+                    currentEnemy.hp -= critDamage;
+                    addLog(`Você usou Golpe Crítico causando ${critDamage} de dano devastador!`, "critical");
+                    break;
+            }
             
-            const enemyProgress = document.querySelector('#battle progress');
-            enemyProgress.value = gameState.enemy.hp;
+            // Atualiza progresso de missões
+            if (currentEnemy.name.includes("Goblin")) {
+                player.questProgress.goblins++;
+                updateQuests();
+            }
+            
+            if (currentEnemy.hp <= 0) {
+                currentEnemy.hp = 0;
+                enemyDefeated();
+            } else {
+                playerTurn = false;
+                setTimeout(enemyTurn, 1000);
+            }
+            
+            updatePlayerStats();
+            renderEnemy();
         }
 
-        // Event Listeners
-        tabs.forEach(tab => {
-            tab.addEventListener('click', () => {
-                switchTab(tab.dataset.tab);
-            });
-        });
-
-        document.getElementById('attack-btn').addEventListener('click', attackEnemy);
-
-        // Inicialização
-        updatePlayerStats();
-        updateBattleUI();
-    </script>
-</body>
-</html>
-function unlockSkill(skillName) {
-    if (skills[skillName] && !player.skillsUnlocked[skillName]) {
-        player.skillsUnlocked[skillName] = true;
-        alert(`Habilidade desbloqueada: ${skills[skillName].name}`);
-    }
-}
-
-// Exemplo de uso quando o jogador sobe de nível:
-unlockSkill('shadowDomination');
-.skill-card.locked {
-    opacity: 0.5;
-    filter: grayscale(80%);
-    pointer-events: none;
-}
-const player = {
-    // ... outras propriedades existentes ...
-    mp: 100,
-    maxMP: 100,
-    shadowArmy: [],
-    skillsUnlocked: {
-        huntersSlash: true,
-        shadowDomination: false,
-        // ... outras habilidades inicialmente bloqueadas
-    }
-};
-// Sistema de Habilidades
-const skills = {
-    huntersSlash: {
-        name: "Corte do Caçador",
-        description: "Ataque que ignora 50% da defesa. Chance de executar inimigos fracos.",
-        cost: 25,
-        execute: function(target) {
-            if (player.mp >= this.cost) {
-                player.mp -= this.cost;
-                const baseDamage = player.stats.str * 1.5;
-                const damage = baseDamage - (target.def * 0.5);
-                
-                // Chance de execução
-                if (target.hp < target.maxHp * 0.1 && Math.random() < 0.15) {
-                    return target.maxHp; // Mata instantaneamente
+        // Inimigo derrotado
+        function enemyDefeated() {
+            const expGained = currentEnemy.exp;
+            const goldGained = currentEnemy.gold;
+            
+            player.exp += expGained;
+            player.gold += goldGained;
+            
+            addLog(`Você derrotou o ${currentEnemy.name} e ganhou ${expGained} EXP e ${goldGained} de ouro!`, "heal");
+            
+            // Verifica drop de itens
+            if (currentEnemy.drops && Math.random() < currentEnemy.drops[0].chance) {
+                const droppedItem = items.find(item => item.id === currentEnemy.drops[0].id);
+                if (droppedItem) {
+                    player.inventory.push(droppedItem);
+                    addLog(`O ${currentEnemy.name} deixou cair ${droppedItem.name}!`, "heal");
+                    renderInventory();
+                    
+                    // Atualiza progresso de missões (cristais)
+                    if (droppedItem.name.includes("Cristal")) {
+                        player.questProgress.crystals++;
+                        updateQuests();
+                    }
                 }
-                return damage;
             }
-            return 0;
-        }
-    },
-    
-    shadowDomination: {
-        name: "Dominação das Sombras",
-        description: "Invoca um soldado sombrio a cada 2 inimigos derrotados.",
-        cost: 50,
-        execute: function() {
-            if (player.mp >= this.cost && player.shadowArmy.length < 3) {
-                player.mp -= this.cost;
-                player.shadowArmy.push({
-                    hp: Math.floor(player.stats.maxHp * 0.3),
-                    damage: Math.floor(player.stats.str * 0.3),
-                    duration: 300000 // 5 minutos em ms
-                });
-                return true;
+            
+            // Verifica se era um boss rank B
+            const enemyRank = Object.keys(enemiesByRank).find(rank => 
+                enemiesByRank[rank].some(e => e.name === currentEnemy.name));
+            
+            if (enemyRank === 'B' && currentEnemy.name.includes("Boss")) {
+                player.questProgress.boss++;
+                updateQuests();
             }
-            return false;
+            
+            // Verifica level up
+            checkLevelUp();
+            
+            currentEnemy = null;
+            playerTurn = true;
+            
+            updatePlayerStats();
+            renderEnemy();
         }
-    }
-    // Adicione as outras habilidades aqui
-};
 
-function useSkill(skillName) {
-    const skill = skills[skillName];
-    if (currentTab === 'battle' && skill) {
-        const result = skill.execute(currentEnemy);
-        if (result) {
-            updateBattleLog(`Você usou ${skill.name}!`);
-            enemyTurn();
+        // Jogador derrotado
+        function playerDefeated() {
+            addLog("Você foi derrotado! Todos os seus itens foram perdidos e você perdeu metade do seu ouro.", "damage");
+            
+            // Penalidade por morte
+            player.hp = Math.floor(player.maxHp * 0.3);
+            player.mp = Math.floor(player.maxMp * 0.3);
+            player.gold = Math.floor(player.gold / 2);
+            player.inventory = [];
+            
+            currentEnemy = null;
+            playerTurn = true;
+            
+            updatePlayerStats();
+            renderEnemy();
+            renderInventory();
         }
-    }
-}
+
+        // Verifica se o jogador subiu de nível
+        function
