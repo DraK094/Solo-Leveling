@@ -1,0 +1,500 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SHADOW ASCENSION RPG</title>
+    <style>
+        /* RESET & FONTE */
+        * { 
+            margin: 0; 
+            padding: 0; 
+            box-sizing: border-box; 
+            font-family: 'Courier New', monospace;
+        }
+        
+        @import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
+        
+        body {
+            background: linear-gradient(135deg, #1a0033 0%, #3d0066 100%);
+            color: #00f7ff;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+        }
+        
+        /* CONTAINERS */
+        .screen {
+            width: 95%;
+            max-width: 420px;
+            background: rgba(0, 0, 20, 0.7);
+            border: 2px solid #4d00ff;
+            border-radius: 5px;
+            padding: 20px;
+            box-shadow: 0 0 20px #6a00ff;
+            position: relative;
+            text-align: center;
+            display: none;
+        }
+        
+        #loginScreen { 
+            display: block; 
+        }
+        
+        /* ELEMENTOS COMUNS */
+        .logo {
+            font-size: 24px;
+            text-shadow: 0 0 10px #00f7ff;
+            margin-bottom: 20px;
+            animation: textGlow 2s infinite alternate;
+        }
+        
+        @keyframes textGlow {
+            from { text-shadow: 0 0 5px #00f7ff; }
+            to { text-shadow: 0 0 15px #ff00f7; }
+        }
+        
+        input, button {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            background: rgba(0, 0, 30, 0.5);
+            border: 1px solid #4d00ff;
+            color: #00f7ff;
+            font-family: 'Press Start 2P', cursive;
+            font-size: 10px;
+        }
+        
+        button {
+            background: #4d00ff;
+            color: white;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        button:hover { 
+            background: #6a00ff; 
+            box-shadow: 0 0 15px #6a00ff;
+        }
+        
+        /* INVENTÁRIO */
+        .inventory-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin: 20px 0;
+        }
+        
+        .equipment-column, .inventory-column {
+            border: 1px solid #4d00ff;
+            padding: 10px;
+            min-height: 200px;
+        }
+        
+        .section-title {
+            font-size: 12px;
+            color: #ff00f7;
+            margin-bottom: 10px;
+        }
+        
+        .equipment-slot {
+            border: 1px dashed #4d00ff;
+            padding: 8px;
+            margin: 5px 0;
+            min-height: 50px;
+            cursor: pointer;
+        }
+        
+        .equipment-slot:hover {
+            background: rgba(77, 0, 255, 0.2);
+        }
+        
+        .slot-name {
+            font-size: 9px;
+            color: #aaa;
+            margin-bottom: 3px;
+        }
+        
+        .item-equipped {
+            border: 1px solid #00f7ff;
+            background: rgba(0, 247, 255, 0.1);
+        }
+        
+        .item-name {
+            font-size: 10px;
+            color: #ff00f7;
+        }
+        
+        .item-stats {
+            font-size: 8px;
+            color: #aaa;
+        }
+        
+        /* STATS */
+        .stats-display {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 5px;
+            font-size: 9px;
+            text-align: left;
+            margin: 10px 0;
+        }
+        
+        .stat-modifier {
+            color: #00f7ff;
+        }
+        
+        /* BATALHA */
+        .battle-container {
+            margin: 15px 0;
+        }
+        
+        .enemy-display {
+            border: 1px solid #ff5555;
+            padding: 10px;
+            margin: 10px 0;
+        }
+        
+        /* LOJA */
+        .shop-item {
+            border: 1px solid #4d00ff;
+            padding: 8px;
+            margin: 5px 0;
+        }
+    </style>
+</head>
+<body>
+    <!-- TELA DE LOGIN -->
+    <div class="screen" id="loginScreen">
+        <div class="logo">SHADOW ASCENSION</div>
+        <input type="text" id="username" placeholder="LOGIN" value="TESTE">
+        <input type="password" id="password" placeholder="SENHA" value="TESTE">
+        <button id="loginBtn">ENTRAR</button>
+    </div>
+    
+    <!-- TELA DE CRIAÇÃO -->
+    <div class="screen" id="creationScreen">
+        <div class="logo">CRIAR CAÇADOR</div>
+        <input type="text" id="charName" placeholder="NOME DO PERSONAGEM">
+        <button id="confirmCharBtn">CONFIRMAR</button>
+    </div>
+    
+    <!-- TELA PRINCIPAL -->
+    <div class="screen" id="gameScreen">
+        <div class="stats-display">
+            <div>FOR: <span id="statStr">5</span> <span id="strMod" class="stat-modifier"></span></div>
+            <div>HP: <span id="statHp">25</span>/25</div>
+            <div>DEF: <span id="statDef">5</span> <span id="defMod" class="stat-modifier"></span></div>
+            <div>MOEDAS: <span id="statGold">1000</span></div>
+        </div>
+        
+        <div class="tab-buttons">
+            <button class="tab-btn active" data-tab="inventory">INVENTÁRIO</button>
+            <button class="tab-btn" data-tab="shop">LOJA</button>
+            <button class="tab-btn" data-tab="battle">BATALHA</button>
+        </div>
+        
+        <!-- ABA INVENTÁRIO -->
+        <div class="tab-content active" id="inventory">
+            <div class="inventory-grid">
+                <div class="equipment-column">
+                    <div class="section-title">EQUIPAMENTO</div>
+                    <div class="equipment-slot" id="weaponSlot">
+                        <div class="slot-name">ARMA</div>
+                        <div>[VAZIO]</div>
+                    </div>
+                    <div class="equipment-slot" id="armorSlot">
+                        <div class="slot-name">ARMADURA</div>
+                        <div>[VAZIO]</div>
+                    </div>
+                    <div class="equipment-slot" id="hauberkSlot">
+                        <div class="slot-name">HAUBERK</div>
+                        <div>[VAZIO]</div>
+                    </div>
+                    <div class="equipment-slot" id="glovesSlot">
+                        <div class="slot-name">LUVAS</div>
+                        <div>[VAZIO]</div>
+                    </div>
+                    <div class="equipment-slot" id="accessorySlot">
+                        <div class="slot-name">ACESSÓRIO</div>
+                        <div>[VAZIO]</div>
+                    </div>
+                </div>
+                
+                <div class="inventory-column">
+                    <div class="section-title">INVENTÁRIO</div>
+                    <div id="inventorySlots"></div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- ABA LOJA -->
+        <div class="tab-content" id="shop">
+            <div class="shop-item">
+                <div class="item-name">ADAGA PRESAS DE KAMISH</div>
+                <div class="item-stats">+3 FOR | 1000 moedas</div>
+                <button class="buy-btn" data-item="kamishDagger">COMPRAR</button>
+            </div>
+        </div>
+        
+        <!-- ABA BATALHA -->
+        <div class="tab-content" id="battle">
+            <div class="battle-container">
+                <div class="enemy-display">
+                    <div class="enemy-name">GOBLIN FILHOTE</div>
+                    <div>HP: <span id="enemyHp">10</span>/10</div>
+                </div>
+                <button id="attackBtn">ATACAR</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // ========== CONFIGURAÇÃO DO JOGO ==========
+        const player = {
+            name: "",
+            gold: 1000,
+            stats: {
+                baseStr: 5,
+                str: 5,
+                baseDef: 5,
+                def: 5,
+                baseSpd: 5,
+                spd: 5,
+                maxHp: 25,
+                hp: 25
+            },
+            equipment: {
+                weapon: null,
+                armor: null,
+                hauberk: null,
+                gloves: null,
+                accessory: null
+            },
+            inventory: []
+        };
+
+        const enemy = {
+            name: "Goblin Filhote",
+            maxHp: 10,
+            hp: 10,
+            atk: 2,
+            def: 2
+        };
+
+        const items = {
+            kamishDagger: {
+                id: "kamishDagger",
+                name: "ADAGA PRESAS DE KAMISH",
+                type: "weapon",
+                price: 1000,
+                stats: { str: 3 },
+                description: "+3 FOR\nHabilidade: Mordida Venenosa"
+            }
+        };
+
+        // ========== FUNÇÕES PRINCIPAIS ==========
+        function updateStatsDisplay() {
+            document.getElementById('statStr').textContent = player.stats.str;
+            document.getElementById('statDef').textContent = player.stats.def;
+            document.getElementById('statHp').textContent = player.stats.hp;
+            document.getElementById('statGold').textContent = player.gold;
+            
+            document.getElementById('strMod').textContent = getModText(player.stats.str - player.stats.baseStr);
+            document.getElementById('defMod').textContent = getModText(player.stats.def - player.stats.baseDef);
+        }
+
+        function getModText(value) {
+            return value !== 0 ? `(${value > 0 ? '+' : ''}${value})` : "";
+        }
+
+        function updateInventoryDisplay() {
+            // Atualiza slots de equipamento
+            const slots = {
+                weapon: "weaponSlot",
+                armor: "armorSlot",
+                hauberk: "hauberkSlot",
+                gloves: "glovesSlot",
+                accessory: "accessorySlot"
+            };
+            
+            for (const [slotType, slotId] of Object.entries(slots)) {
+                const slotElement = document.getElementById(slotId);
+                const item = player.equipment[slotType];
+                
+                if (item) {
+                    slotElement.innerHTML = `
+                        <div class="slot-name">${slotType.toUpperCase()}</div>
+                        <div class="item-name">${item.name}</div>
+                        <div class="item-stats">${item.description}</div>
+                    `;
+                    slotElement.classList.add('item-equipped');
+                    slotElement.onclick = () => unequipItem(slotType);
+                } else {
+                    slotElement.innerHTML = `
+                        <div class="slot-name">${slotType.toUpperCase()}</div>
+                        <div>[VAZIO]</div>
+                    `;
+                    slotElement.classList.remove('item-equipped');
+                    slotElement.onclick = null;
+                }
+            }
+            
+            // Atualiza inventário
+            const inventorySlots = document.getElementById('inventorySlots');
+            inventorySlots.innerHTML = "";
+            
+            player.inventory.forEach(item => {
+                const itemSlot = document.createElement('div');
+                itemSlot.className = 'equipment-slot';
+                itemSlot.innerHTML = `
+                    <div class="item-name">${item.name}</div>
+                    <div class="item-stats">${item.description}</div>
+                `;
+                itemSlot.onclick = () => equipItem(item);
+                inventorySlots.appendChild(itemSlot);
+            });
+        }
+
+        function equipItem(item) {
+            const slotType = item.type;
+            
+            // Desequipa item atual se existir
+            if (player.equipment[slotType]) {
+                unequipItem(slotType);
+            }
+            
+            // Equipa novo item
+            player.equipment[slotType] = item;
+            
+            // Aplica stats
+            for (const [stat, value] of Object.entries(item.stats)) {
+                player.stats[stat] = player.stats[`base${stat.charAt(0).toUpperCase() + stat.slice(1)}`] + value;
+            }
+            
+            // Remove do inventário
+            player.inventory = player.inventory.filter(i => i.id !== item.id);
+            
+            updateStatsDisplay();
+            updateInventoryDisplay();
+        }
+
+        function unequipItem(slotType) {
+            const item = player.equipment[slotType];
+            if (item) {
+                // Verifica se há espaço no inventário
+                if (player.inventory.length >= 10) {
+                    alert("Inventário cheio!");
+                    return;
+                }
+                
+                // Remove stats
+                for (const [stat, value] of Object.entries(item.stats)) {
+                    player.stats[stat] = player.stats[`base${stat.charAt(0).toUpperCase() + stat.slice(1)}`];
+                }
+                
+                player.inventory.push(item);
+                player.equipment[slotType] = null;
+                
+                updateStatsDisplay();
+                updateInventoryDisplay();
+            }
+        }
+
+        function buyItem(itemId) {
+            const item = items[itemId];
+            
+            if (player.gold >= item.price) {
+                player.gold -= item.price;
+                player.inventory.push(item);
+                
+                updateStatsDisplay();
+                updateInventoryDisplay();
+                alert(`${item.name} comprada com sucesso!`);
+            } else {
+                alert("Moedas insuficientes!");
+            }
+        }
+
+        function attackEnemy() {
+            const damage = Math.max(1, player.stats.str - enemy.def);
+            enemy.hp -= damage;
+            
+            document.getElementById('enemyHp').textContent = enemy.hp;
+            
+            if (enemy.hp <= 0) {
+                alert(`Você derrotou o ${enemy.name} e ganhou 1000 moedas!`);
+                player.gold += 1000;
+                enemy.hp = enemy.maxHp;
+                updateStatsDisplay();
+                return;
+            }
+            
+            // Ataque do inimigo
+            setTimeout(() => {
+                const enemyDamage = Math.max(1, enemy.atk - player.stats.def);
+                player.stats.hp -= enemyDamage;
+                
+                updateStatsDisplay();
+                alert(`O ${enemy.name} te atacou causando ${enemyDamage} de dano!`);
+                
+                if (player.stats.hp <= 0) {
+                    alert("Você foi derrotado!");
+                    player.stats.hp = player.stats.maxHp;
+                    updateStatsDisplay();
+                }
+            }, 500);
+        }
+
+        function switchTab(tabId) {
+            document.querySelectorAll('.tab-content').forEach(content => {
+                content.classList.remove('active');
+            });
+            
+            document.querySelectorAll('.tab-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            
+            document.getElementById(tabId).classList.add('active');
+            document.querySelector(`.tab-btn[data-tab="${tabId}"]`).classList.add('active');
+        }
+
+        // ========== EVENT LISTENERS ==========
+        document.getElementById('loginBtn').addEventListener('click', () => {
+            document.getElementById('loginScreen').style.display = 'none';
+            document.getElementById('creationScreen').style.display = 'block';
+        });
+
+        document.getElementById('confirmCharBtn').addEventListener('click', () => {
+            const charName = document.getElementById('charName').value;
+            
+            if (!charName) {
+                alert("O Sistema exige um nome!");
+                return;
+            }
+            
+            player.name = charName;
+            document.getElementById('creationScreen').style.display = 'none';
+            document.getElementById('gameScreen').style.display = 'block';
+            
+            // Adiciona itens iniciais
+            player.inventory = [items.kamishDagger];
+            
+            updateStatsDisplay();
+            updateInventoryDisplay();
+        });
+
+        document.querySelectorAll('.tab-btn').forEach(btn => {
+            btn.addEventListener('click', () => switchTab(btn.dataset.tab));
+        });
+
+        document.querySelector('.buy-btn')?.addEventListener('click', () => buyItem('kamishDagger'));
+        document.getElementById('attackBtn')?.addEventListener('click', attackEnemy);
+
+        // ========== INICIALIZAÇÃO ==========
+        updateStatsDisplay();
+    </script>
+</body>
+</html>
