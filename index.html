@@ -5,148 +5,168 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Reinos Além dos Portais</title>
     <style>
+        :root {
+            --color-primary: #6a5acd;
+            --color-secondary: #483d8b;
+            --color-dark: #1a1a2e;
+            --color-darker: #16213e;
+            --color-light: #e2e2e2;
+            --color-danger: #e94560;
+            --color-success: #2ecc71;
+            --color-warning: #ffcc00;
+            --color-info: #3498db;
+        }
+        
         body {
-            font-family: 'Arial', sans-serif;
-            background-color: #1a1a1a;
-            color: #e0e0e0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--color-dark);
+            color: var(--color-light);
             margin: 0;
-            padding: 20px;
+            padding: 0;
+            line-height: 1.6;
         }
         
         .game-container {
-            max-width: 800px;
+            max-width: 1000px;
             margin: 0 auto;
-            background-color: #2a2a2a;
-            border-radius: 10px;
             padding: 20px;
-            box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+        }
+        
+        header {
+            text-align: center;
+            margin-bottom: 30px;
+            background: linear-gradient(135deg, var(--color-primary), var(--color-secondary));
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
         }
         
         h1, h2, h3 {
-            color: #f0f0f0;
-            text-align: center;
+            color: white;
+            margin-top: 0;
         }
         
-        .player-section, .enemy-section, .battle-section, .inventory-section, .shop-section, .portal-section {
-            background-color: #333;
-            border-radius: 8px;
-            padding: 15px;
+        .game-area {
+            display: grid;
+            grid-template-columns: 1fr 2fr;
+            gap: 20px;
+        }
+        
+        .player-panel, .battle-panel, .inventory-panel, .shop-panel, .quest-panel {
+            background-color: var(--color-darker);
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
+        }
+        
+        .status-bars {
             margin-bottom: 20px;
         }
         
-        .status-bar {
-            display: flex;
-            justify-content: space-between;
+        .bar-container {
             margin-bottom: 10px;
         }
         
-        .hp-bar, .mp-bar {
-            height: 20px;
-            border-radius: 5px;
-            overflow: hidden;
-            background-color: #444;
+        .bar-label {
+            display: flex;
+            justify-content: space-between;
             margin-bottom: 5px;
         }
         
-        .hp-fill {
-            height: 100%;
-            background-color: #e74c3c;
-            width: 100%;
-            transition: width 0.3s;
+        .bar {
+            height: 20px;
+            background-color: #333;
+            border-radius: 10px;
+            overflow: hidden;
         }
         
-        .mp-fill {
+        .bar-fill {
             height: 100%;
-            background-color: #3498db;
-            width: 100%;
-            transition: width 0.3s;
+            transition: width 0.3s ease;
         }
         
-        .skills button, .battle-actions button, .portal-button {
-            background-color: #4a4a4a;
+        .hp-bar {
+            background-color: var(--color-danger);
+        }
+        
+        .mp-bar {
+            background-color: var(--color-info);
+        }
+        
+        .exp-bar {
+            background-color: var(--color-warning);
+        }
+        
+        .attributes {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+        
+        .attribute {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .attribute button {
+            background-color: var(--color-primary);
             color: white;
             border: none;
-            padding: 8px 12px;
-            margin: 5px;
-            border-radius: 5px;
+            width: 25px;
+            height: 25px;
+            border-radius: 50%;
             cursor: pointer;
-            transition: background-color 0.2s;
-        }
-        
-        .skills button:hover, .battle-actions button:hover, .portal-button:hover {
-            background-color: #5a5a5a;
-        }
-        
-        .skills button:disabled, .battle-actions button:disabled {
-            background-color: #3a3a3a;
-            color: #777;
-            cursor: not-allowed;
-        }
-        
-        .inventory-grid, .shop-grid {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 10px;
-        }
-        
-        .item-card {
-            background-color: #3a3a3a;
-            padding: 10px;
-            border-radius: 5px;
-            text-align: center;
-        }
-        
-        .item-card img {
-            width: 50px;
-            height: 50px;
-            object-fit: contain;
-        }
-        
-        .log {
-            height: 150px;
-            overflow-y: auto;
-            background-color: #222;
-            padding: 10px;
-            border-radius: 5px;
-            margin-top: 10px;
-        }
-        
-        .log-entry {
-            margin-bottom: 5px;
-            padding-bottom: 5px;
-            border-bottom: 1px solid #444;
-        }
-        
-        .critical {
-            color: #ffcc00;
             font-weight: bold;
         }
         
-        .heal {
-            color: #2ecc71;
+        .attribute button:disabled {
+            background-color: #555;
+            cursor: not-allowed;
         }
         
-        .damage {
-            color: #e74c3c;
+        .equipment {
+            margin-top: 20px;
+        }
+        
+        .equipment-slot {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+            padding: 10px;
+            background-color: rgba(0, 0, 0, 0.2);
+            border-radius: 5px;
         }
         
         .tab-buttons {
             display: flex;
-            margin-bottom: 10px;
+            margin-bottom: 20px;
+            border-bottom: 2px solid var(--color-primary);
         }
         
         .tab-button {
-            padding: 8px 15px;
-            background-color: #3a3a3a;
+            padding: 10px 20px;
+            background: none;
             border: none;
-            color: white;
+            color: var(--color-light);
             cursor: pointer;
-            margin-right: 5px;
-            border-radius: 5px 5px 0 0;
+            font-weight: bold;
+            position: relative;
         }
         
         .tab-button.active {
-            background-color: #4a4a4a;
+            color: white;
+        }
+        
+        .tab-button.active::after {
+            content: '';
+            position: absolute;
+            bottom: -2px;
+            left: 0;
+            width: 100%;
+            height: 2px;
+            background-color: var(--color-warning);
         }
         
         .tab-content {
@@ -156,161 +176,621 @@
         .tab-content.active {
             display: block;
         }
+        
+        .enemy-display {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        
+        .enemy-image {
+            width: 150px;
+            height: 150px;
+            object-fit: contain;
+            margin-bottom: 15px;
+            background-color: rgba(0, 0, 0, 0.3);
+            border-radius: 10px;
+            padding: 10px;
+        }
+        
+        .battle-actions {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+        
+        .action-button {
+            padding: 12px;
+            background-color: var(--color-primary);
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.2s;
+        }
+        
+        .action-button:hover {
+            background-color: var(--color-secondary);
+            transform: translateY(-2px);
+        }
+        
+        .action-button:disabled {
+            background-color: #555;
+            cursor: not-allowed;
+            transform: none;
+        }
+        
+        .action-button.skill {
+            background-color: var(--color-info);
+        }
+        
+        .action-button.heal {
+            background-color: var(--color-success);
+        }
+        
+        .action-button.escape {
+            background-color: var(--color-warning);
+            color: #333;
+        }
+        
+        .battle-log {
+            height: 200px;
+            overflow-y: auto;
+            background-color: rgba(0, 0, 0, 0.3);
+            padding: 15px;
+            border-radius: 5px;
+            margin-top: 20px;
+        }
+        
+        .log-entry {
+            margin-bottom: 10px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            animation: fadeIn 0.3s ease;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(5px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .critical {
+            color: var(--color-warning);
+            font-weight: bold;
+        }
+        
+        .damage {
+            color: var(--color-danger);
+        }
+        
+        .heal {
+            color: var(--color-success);
+        }
+        
+        .portal-buttons {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 10px;
+            margin-top: 20px;
+        }
+        
+        .portal-button {
+            padding: 12px;
+            background-color: var(--color-secondary);
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.2s;
+        }
+        
+        .portal-button:hover {
+            background-color: var(--color-primary);
+            transform: translateY(-2px);
+        }
+        
+        .portal-button.rank-e {
+            background-color: #4CAF50;
+        }
+        
+        .portal-button.rank-d {
+            background-color: #8BC34A;
+        }
+        
+        .portal-button.rank-c {
+            background-color: #FFC107;
+            color: #333;
+        }
+        
+        .portal-button.rank-b {
+            background-color: #FF9800;
+        }
+        
+        .portal-button.rank-a {
+            background-color: #FF5722;
+        }
+        
+        .portal-button.rank-s {
+            background-color: #9C27B0;
+        }
+        
+        .portal-button.rank-ss {
+            background-color: #F44336;
+        }
+        
+        .inventory-grid, .shop-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+            gap: 15px;
+        }
+        
+        .item-card {
+            background-color: rgba(0, 0, 0, 0.2);
+            border-radius: 8px;
+            padding: 15px;
+            transition: all 0.2s;
+            cursor: pointer;
+            text-align: center;
+        }
+        
+        .item-card:hover {
+            background-color: rgba(0, 0, 0, 0.4);
+            transform: translateY(-3px);
+        }
+        
+        .item-card img {
+            width: 50px;
+            height: 50px;
+            object-fit: contain;
+            margin-bottom: 10px;
+        }
+        
+        .item-card h4 {
+            margin: 5px 0;
+            color: white;
+        }
+        
+        .item-card p {
+            margin: 3px 0;
+            font-size: 0.9em;
+            color: #ccc;
+        }
+        
+        .item-card .item-actions {
+            margin-top: 10px;
+        }
+        
+        .item-card button {
+            padding: 5px 10px;
+            background-color: var(--color-primary);
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 0.8em;
+            margin: 2px;
+        }
+        
+        .item-card button:hover {
+            background-color: var(--color-secondary);
+        }
+        
+        .quest-item {
+            background-color: rgba(0, 0, 0, 0.2);
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 15px;
+        }
+        
+        .quest-item h3 {
+            margin-top: 0;
+            color: var(--color-warning);
+        }
+        
+        .quest-progress {
+            height: 10px;
+            background-color: #333;
+            border-radius: 5px;
+            margin: 10px 0;
+            overflow: hidden;
+        }
+        
+        .quest-progress-fill {
+            height: 100%;
+            background-color: var(--color-success);
+            width: 0%;
+            transition: width 0.3s ease;
+        }
+        
+        .quest-reward {
+            display: flex;
+            align-items: center;
+            margin-top: 10px;
+            color: var(--color-warning);
+        }
+        
+        .quest-reward img {
+            width: 20px;
+            height: 20px;
+            margin-right: 5px;
+        }
+        
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.8);
+            z-index: 100;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .modal-content {
+            background-color: var(--color-darker);
+            padding: 30px;
+            border-radius: 10px;
+            max-width: 500px;
+            width: 90%;
+            max-height: 80vh;
+            overflow-y: auto;
+            position: relative;
+        }
+        
+        .close-modal {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: none;
+            border: none;
+            color: white;
+            font-size: 24px;
+            cursor: pointer;
+        }
+        
+        .sound-controls {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            z-index: 10;
+        }
+        
+        .sound-button {
+            background-color: var(--color-primary);
+            color: white;
+            border: none;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 24px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.3);
+        }
+        
+        @media (max-width: 768px) {
+            .game-area {
+                grid-template-columns: 1fr;
+            }
+            
+            .battle-actions {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            
+            .portal-buttons {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+        
+        /* Animations */
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            10%, 30%, 50%, 70%, 90% { transform: translateX(-5px); }
+            20%, 40%, 60%, 80% { transform: translateX(5px); }
+        }
+        
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+        
+        .shake {
+            animation: shake 0.5s;
+        }
+        
+        .pulse {
+            animation: pulse 0.5s;
+        }
+        
+        .floating {
+            animation: floating 3s ease-in-out infinite;
+        }
+        
+        @keyframes floating {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
     </style>
 </head>
 <body>
     <div class="game-container">
-        <h1>Reinos Além dos Portais</h1>
+        <header>
+            <h1>Reinos Além dos Portais</h1>
+            <p>Um RPG épico de batalha por turnos</p>
+        </header>
         
-        <div class="player-section">
-            <h2>Herói</h2>
-            <div class="status-bar">
-                <div>
-                    <p>Level: <span id="player-level">1</span></p>
-                    <p>EXP: <span id="player-exp">0</span>/<span id="player-next-exp">100</span></p>
-                </div>
-                <div>
-                    <p>Ouro: <span id="player-gold">100</span></p>
-                </div>
-            </div>
-            
-            <div class="hp-bar">
-                <div class="hp-fill" id="player-hp-bar"></div>
-            </div>
-            <p>HP: <span id="player-hp">100</span>/<span id="player-max-hp">100</span></p>
-            
-            <div class="mp-bar">
-                <div class="mp-fill" id="player-mp-bar"></div>
-            </div>
-            <p>MP: <span id="player-mp">50</span>/<span id="player-max-mp">50</span></p>
-            
-            <h3>Atributos</h3>
-            <div class="attributes">
-                <p>Força: <span id="player-str">5</span> <button onclick="increaseStat('str')">+</button></p>
-                <p>Defesa: <span id="player-def">5</span> <button onclick="increaseStat('def')">+</button></p>
-                <p>Inteligência: <span id="player-int">5</span> <button onclick="increaseStat('int')">+</button></p>
-                <p>Velocidade: <span id="player-spd">5</span> <button onclick="increaseStat('spd')">+</button></p>
-                <p>Pontos disponíveis: <span id="stat-points">0</span></p>
-            </div>
-            
-            <h3>Equipamento</h3>
-            <div class="equipment">
-                <p>Arma: <span id="equip-weapon">Nenhuma</span></p>
-                <p>Armadura: <span id="equip-armor">Nenhuma</span></p>
-            </div>
-        </div>
-        
-        <div class="tab-buttons">
-            <button class="tab-button active" onclick="openTab('battle')">Batalha</button>
-            <button class="tab-button" onclick="openTab('skills')">Habilidades</button>
-            <button class="tab-button" onclick="openTab('inventory')">Inventário</button>
-            <button class="tab-button" onclick="openTab('shop')">Loja</button>
-            <button class="tab-button" onclick="openTab('quests')">Missões</button>
-        </div>
-        
-        <div id="battle" class="tab-content active">
-            <div class="battle-section">
-                <h2>Batalha</h2>
-                <div id="enemy-display">
-                    <p>Nenhum inimigo encontrado. Entre em um portal para começar!</p>
+        <div class="game-area">
+            <div class="player-panel">
+                <h2>Herói</h2>
+                
+                <div class="status-bars">
+                    <div class="bar-container">
+                        <div class="bar-label">
+                            <span>Level <span id="player-level">1</span></span>
+                            <span>EXP: <span id="player-exp">0</span>/<span id="player-next-exp">100</span></span>
+                        </div>
+                        <div class="bar">
+                            <div class="bar-fill exp-bar" id="player-exp-bar" style="width: 0%"></div>
+                        </div>
+                    </div>
+                    
+                    <div class="bar-container">
+                        <div class="bar-label">
+                            <span>HP</span>
+                            <span><span id="player-hp">100</span>/<span id="player-max-hp">100</span></span>
+                        </div>
+                        <div class="bar">
+                            <div class="bar-fill hp-bar" id="player-hp-bar" style="width: 100%"></div>
+                        </div>
+                    </div>
+                    
+                    <div class="bar-container">
+                        <div class="bar-label">
+                            <span>MP</span>
+                            <span><span id="player-mp">50</span>/<span id="player-max-mp">50</span></span>
+                        </div>
+                        <div class="bar">
+                            <div class="bar-fill mp-bar" id="player-mp-bar" style="width: 100%"></div>
+                        </div>
+                    </div>
                 </div>
                 
-                <div class="battle-actions">
-                    <h3>Ações</h3>
-                    <button onclick="playerAttack()">Atacar</button>
-                    <button onclick="useSkill(0)">Golpe Certeiro (5 MP)</button>
-                    <button onclick="useSkill(1)">Escudo Mágico (10 MP)</button>
-                    <button onclick="useSkill(2)">Tempestade de Aço (15 MP)</button>
-                    <button onclick="useSkill(3)">Cura Divina (20 MP)</button>
-                    <button onclick="useSkill(4)">Golpe Crítico (25 MP)</button>
+                <div class="attributes">
+                    <div class="attribute">
+                        <span>Força:</span>
+                        <span id="player-str">5</span>
+                        <button id="str-btn" onclick="increaseStat('str')" disabled>+</button>
+                    </div>
+                    <div class="attribute">
+                        <span>Defesa:</span>
+                        <span id="player-def">5</span>
+                        <button id="def-btn" onclick="increaseStat('def')" disabled>+</button>
+                    </div>
+                    <div class="attribute">
+                        <span>Inteligência:</span>
+                        <span id="player-int">5</span>
+                        <button id="int-btn" onclick="increaseStat('int')" disabled>+</button>
+                    </div>
+                    <div class="attribute">
+                        <span>Velocidade:</span>
+                        <span id="player-spd">5</span>
+                        <button id="spd-btn" onclick="increaseStat('spd')" disabled>+</button>
+                    </div>
                 </div>
                 
-                <div class="log" id="battle-log">
-                    <div class="log-entry">Bem-vindo ao Reinos Além dos Portais!</div>
+                <div class="stat-points">
+                    <p>Pontos disponíveis: <span id="stat-points">0</span></p>
+                </div>
+                
+                <div class="gold-display">
+                    <p>Ouro: <span id="player-gold">100</span> <img src="https://i.imgur.com/6Q5ZQ9O.png" alt="Gold" style="width: 16px; vertical-align: middle;"></p>
+                </div>
+                
+                <div class="equipment">
+                    <h3>Equipamento</h3>
+                    <div class="equipment-slot">
+                        <span>Arma:</span>
+                        <span id="equip-weapon">Nenhuma</span>
+                    </div>
+                    <div class="equipment-slot">
+                        <span>Armadura:</span>
+                        <span id="equip-armor">Nenhuma</span>
+                    </div>
                 </div>
             </div>
             
-            <div class="portal-section">
-                <h2>Portais</h2>
-                <p>Selecione um portal para encontrar inimigos:</p>
-                <button class="portal-button" onclick="enterPortal('E')">Portal Rank E</button>
-                <button class="portal-button" onclick="enterPortal('D')">Portal Rank D</button>
-                <button class="portal-button" onclick="enterPortal('C')">Portal Rank C</button>
-                <button class="portal-button" onclick="enterPortal('B')">Portal Rank B</button>
-                <button class="portal-button" onclick="enterPortal('A')">Portal Rank A</button>
-                <button class="portal-button" onclick="enterPortal('S')">Portal Rank S</button>
-                <button class="portal-button" onclick="enterPortal('SS')">Portal Rank SS</button>
-            </div>
-        </div>
-        
-        <div id="skills" class="tab-content">
-            <h2>Habilidades</h2>
-            <div class="skills">
-                <div class="skill">
-                    <h3>Golpe Certeiro</h3>
-                    <p>Custo: 5 MP</p>
-                    <p>Dano físico simples (100% do ataque).</p>
+            <div class="battle-panel">
+                <div class="tab-buttons">
+                    <button class="tab-button active" onclick="openTab('battle')">Batalha</button>
+                    <button class="tab-button" onclick="openTab('inventory')">Inventário</button>
+                    <button class="tab-button" onclick="openTab('shop')">Loja</button>
+                    <button class="tab-button" onclick="openTab('quests')">Missões</button>
                 </div>
-                <div class="skill">
-                    <h3>Escudo Mágico</h3>
-                    <p>Custo: 10 MP</p>
-                    <p>Reduz próximo ataque em 50%.</p>
+                
+                <div id="battle" class="tab-content active">
+                    <div class="enemy-display">
+                        <img id="enemy-image" class="enemy-image floating" src="https://i.imgur.com/3ZQ9Z9J.png" alt="Portal">
+                        <h3 id="enemy-name">Nenhum inimigo</h3>
+                        <div class="bar-container">
+                            <div class="bar">
+                                <div class="bar-fill hp-bar" id="enemy-hp-bar" style="width: 0%"></div>
+                            </div>
+                            <div class="bar-label">
+                                <span>HP: <span id="enemy-hp">0</span>/<span id="enemy-max-hp">0</span></span>
+                                <span id="enemy-rank"></span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="battle-actions">
+                        <button class="action-button" onclick="playerAttack()">Atacar</button>
+                        <button class="action-button skill" onclick="useSkill(0)" disabled>Golpe Certeiro</button>
+                        <button class="action-button skill" onclick="useSkill(1)" disabled>Escudo Mágico</button>
+                        <button class="action-button skill" onclick="useSkill(2)" disabled>Tempestade de Aço</button>
+                        <button class="action-button heal" onclick="useSkill(3)" disabled>Cura Divina</button>
+                        <button class="action-button" onclick="useSkill(4)" disabled>Golpe Crítico</button>
+                        <button class="action-button escape" onclick="fleeBattle()">Fugir</button>
+                    </div>
+                    
+                    <div class="portal-buttons">
+                        <button class="portal-button rank-e" onclick="enterPortal('E')">Rank E</button>
+                        <button class="portal-button rank-d" onclick="enterPortal('D')">Rank D</button>
+                        <button class="portal-button rank-c" onclick="enterPortal('C')">Rank C</button>
+                        <button class="portal-button rank-b" onclick="enterPortal('B')">Rank B</button>
+                        <button class="portal-button rank-a" onclick="enterPortal('A')">Rank A</button>
+                        <button class="portal-button rank-s" onclick="enterPortal('S')">Rank S</button>
+                        <button class="portal-button rank-ss" onclick="enterPortal('SS')">Rank SS</button>
+                    </div>
+                    
+                    <div class="battle-log" id="battle-log">
+                        <div class="log-entry">Bem-vindo ao Reinos Além dos Portais! Entre em um portal para começar sua aventura.</div>
+                    </div>
                 </div>
-                <div class="skill">
-                    <h3>Tempestade de Aço</h3>
-                    <p>Custo: 15 MP</p>
-                    <p>Ataque 3x com 70% do dano.</p>
+                
+                <div id="inventory" class="tab-content">
+                    <h2>Inventário</h2>
+                    <div class="inventory-grid" id="inventory-items">
+                        <p>Seu inventário está vazio.</p>
+                    </div>
                 </div>
-                <div class="skill">
-                    <h3>Cura Divina</h3>
-                    <p>Custo: 20 MP</p>
-                    <p>Restaura 30% do HP máximo.</p>
+                
+                <div id="shop" class="tab-content">
+                    <h2>Loja</h2>
+                    <div class="shop-grid" id="shop-items">
+                        <p>Carregando itens da loja...</p>
+                    </div>
                 </div>
-                <div class="skill">
-                    <h3>Golpe Crítico</h3>
-                    <p>Custo: 25 MP</p>
-                    <p>Ataque com 200% de dano e ignora 30% da defesa.</p>
-                </div>
-            </div>
-        </div>
-        
-        <div id="inventory" class="tab-content">
-            <h2>Inventário</h2>
-            <div class="inventory-grid" id="inventory-items">
-                <!-- Itens serão gerados dinamicamente -->
-            </div>
-        </div>
-        
-        <div id="shop" class="tab-content">
-            <h2>Loja</h2>
-            <div class="shop-grid" id="shop-items">
-                <!-- Itens da loja serão gerados dinamicamente -->
-            </div>
-        </div>
-        
-        <div id="quests" class="tab-content">
-            <h2>Missões</h2>
-            <div id="daily-quests">
-                <h3>Missões Diárias</h3>
-                <div class="quest">
-                    <p>Derrote 5 Goblins</p>
-                    <p>Progresso: <span id="quest-goblins">0</span>/5</p>
-                    <p>Recompensa: 500 Ouro + Poção de Cura</p>
-                </div>
-                <div class="quest">
-                    <p>Colete 10 Cristais</p>
-                    <p>Progresso: <span id="quest-crystals">0</span>/10</p>
-                    <p>Recompensa: 1000 Ouro + Escudo de Ferro</p>
-                </div>
-                <div class="quest">
-                    <p>Mate um Boss Rank B</p>
-                    <p>Progresso: <span id="quest-boss">0</span>/1</p>
-                    <p>Recompensa: 3000 Ouro + Espada Flamejante</p>
+                
+                <div id="quests" class="tab-content">
+                    <h2>Missões</h2>
+                    <div id="daily-quests">
+                        <div class="quest-item">
+                            <h3>Iniciante: Derrote Goblins</h3>
+                            <p>Derrote 5 Goblins (Rank E)</p>
+                            <div class="quest-progress">
+                                <div class="quest-progress-fill" id="quest-goblins-bar" style="width: 0%"></div>
+                            </div>
+                            <p>Progresso: <span id="quest-goblins">0</span>/5</p>
+                            <div class="quest-reward">
+                                <img src="https://i.imgur.com/6Q5ZQ9O.png" alt="Gold">
+                                <span>500 Ouro + Poção de Cura</span>
+                            </div>
+                            <button class="action-button" id="claim-goblins" disabled onclick="claimQuest('goblins')">Reclamar Recompensa</button>
+                        </div>
+                        
+                        <div class="quest-item">
+                            <h3>Caçador de Cristais</h3>
+                            <p>Colete 10 Cristais Mágicos</p>
+                            <div class="quest-progress">
+                                <div class="quest-progress-fill" id="quest-crystals-bar" style="width: 0%"></div>
+                            </div>
+                            <p>Progresso: <span id="quest-crystals">0</span>/10</p>
+                            <div class="quest-reward">
+                                <img src="https://i.imgur.com/6Q5ZQ9O.png" alt="Gold">
+                                <span>1000 Ouro + Escudo de Ferro</span>
+                            </div>
+                            <button class="action-button" id="claim-crystals" disabled onclick="claimQuest('crystals')">Reclamar Recompensa</button>
+                        </div>
+                        
+                        <div class="quest-item">
+                            <h3>Desafiador: Derrote um Boss</h3>
+                            <p>Derrote 1 Boss Rank B ou superior</p>
+                            <div class="quest-progress">
+                                <div class="quest-progress-fill" id="quest-boss-bar" style="width: 0%"></div>
+                            </div>
+                            <p>Progresso: <span id="quest-boss">0</span>/1</p>
+                            <div class="quest-reward">
+                                <img src="https://i.imgur.com/6Q5ZQ9O.png" alt="Gold">
+                                <span>3000 Ouro + Espada Flamejante</span>
+                            </div>
+                            <button class="action-button" id="claim-boss" disabled onclick="claimQuest('boss')">Reclamar Recompensa</button>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
+    
+    <div class="sound-controls">
+        <button class="sound-button" id="sound-toggle" onclick="toggleSound()">🔊</button>
+    </div>
+    
+    <div class="modal" id="level-up-modal">
+        <div class="modal-content">
+            <button class="close-modal" onclick="closeModal('level-up-modal')">×</button>
+            <h2>Level Up!</h2>
+            <p>Parabéns! Você subiu para o nível <span id="new-level">2</span>!</p>
+            <p>Você ganhou <strong>5 pontos de atributo</strong> para distribuir.</p>
+            <button class="action-button" onclick="closeModal('level-up-modal')">Continuar</button>
+        </div>
+    </div>
+    
+    <div class="modal" id="item-modal">
+        <div class="modal-content">
+            <button class="close-modal" onclick="closeModal('item-modal')">×</button>
+            <h2 id="item-modal-title">Item</h2>
+            <div id="item-modal-content">
+                <!-- Conteúdo dinâmico -->
+            </div>
+        </div>
+    </div>
+    
+    <div class="modal" id="game-over-modal">
+        <div class="modal-content">
+            <h2>Game Over</h2>
+            <p>Você foi derrotado em batalha!</p>
+            <p>Todos os seus itens foram perdidos e você perdeu metade do seu ouro.</p>
+            <button class="action-button" onclick="closeModal('game-over-modal')">Continuar</button>
+        </div>
+    </div>
+    
+    <div class="modal" id="victory-modal">
+        <div class="modal-content">
+            <h2>Vitória!</h2>
+            <p>Você derrotou <span id="defeated-enemy">o inimigo</span>!</p>
+            <p>Recompensas:</p>
+            <ul id="victory-rewards">
+                <!-- Recompensas serão adicionadas aqui -->
+            </ul>
+            <button class="action-button" onclick="closeModal('victory-modal')">Continuar</button>
+        </div>
+    </div>
 
+    <audio id="bg-music" loop>
+        <source src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3" type="audio/mpeg">
+    </audio>
+    
+    <audio id="battle-music">
+        <source src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2.mp3" type="audio/mpeg">
+    </audio>
+    
+    <audio id="attack-sound">
+        <source src="https://www.soundjay.com/buttons/sounds/button-09.mp3" type="audio/mpeg">
+    </audio>
+    
+    <audio id="crit-sound">
+        <source src="https://www.soundjay.com/buttons/sounds/button-10.mp3" type="audio/mpeg">
+    </audio>
+    
+    <audio id="heal-sound">
+        <source src="https://www.soundjay.com/buttons/sounds/button-21.mp3" type="audio/mpeg">
+    </audio>
+    
+    <audio id="level-up-sound">
+        <source src="https://www.soundjay.com/buttons/sounds/button-20.mp3" type="audio/mpeg">
+    </audio>
+    
+    <audio id="portal-sound">
+        <source src="https://www.soundjay.com/buttons/sounds/button-16.mp3" type="audio/mpeg">
+    </audio>
+    
     <script>
         // Dados do Jogador
         const player = {
@@ -342,104 +822,204 @@
                 { name: "Golpe Crítico", cost: 25, description: "Ataque com 200% de dano e ignora 30% da defesa." }
             ],
             activeShield: false,
-            questProgress: {
-                goblins: 0,
-                crystals: 0,
-                boss: 0
+            quests: {
+                goblins: { current: 0, required: 5, claimed: false },
+                crystals: { current: 0, required: 10, claimed: false },
+                boss: { current: 0, required: 1, claimed: false }
+            },
+            settings: {
+                sound: true,
+                music: true
             }
         };
 
         // Dados dos Inimigos por Rank
         const enemiesByRank = {
             'E': [
-                { name: "Goblin", hp: 30, atk: 5, def: 2, exp: 20, gold: 10, drops: [{ id: 1, chance: 0.3 }] },
-                { name: "Slime", hp: 40, atk: 3, def: 1, exp: 15, gold: 5, drops: [{ id: 2, chance: 0.2 }] },
-                { name: "Aranha Pequena", hp: 25, atk: 6, def: 0, exp: 25, gold: 8, drops: [{ id: 3, chance: 0.25 }] }
+                { name: "Goblin", hp: 30, atk: 5, def: 2, exp: 20, gold: 10, drops: [{ id: 1, chance: 0.3 }], image: "https://i.imgur.com/3ZQ9Z9J.png" },
+                { name: "Slime", hp: 40, atk: 3, def: 1, exp: 15, gold: 5, drops: [{ id: 2, chance: 0.2 }], image: "https://i.imgur.com/4Q5ZQ9J.png" },
+                { name: "Aranha Pequena", hp: 25, atk: 6, def: 0, exp: 25, gold: 8, drops: [{ id: 3, chance: 0.25 }], image: "https://i.imgur.com/5Q5ZQ9J.png" }
             ],
             'D': [
-                { name: "Lobo", hp: 60, atk: 8, def: 3, exp: 40, gold: 20, drops: [{ id: 4, chance: 0.3 }] },
-                { name: "Esqueleto", hp: 50, atk: 10, def: 5, exp: 45, gold: 25, drops: [{ id: 5, chance: 0.35 }] }
+                { name: "Lobo", hp: 60, atk: 8, def: 3, exp: 40, gold: 20, drops: [{ id: 4, chance: 0.3 }], image: "https://i.imgur.com/6Q5ZQ9J.png" },
+                { name: "Esqueleto", hp: 50, atk: 10, def: 5, exp: 45, gold: 25, drops: [{ id: 5, chance: 0.35 }], image: "https://i.imgur.com/7Q5ZQ9J.png" }
             ],
             'C': [
-                { name: "Orc", hp: 90, atk: 12, def: 8, exp: 70, gold: 40, drops: [{ id: 6, chance: 0.4 }] },
-                { name: "Aranha Gigante", hp: 70, atk: 15, def: 5, exp: 65, gold: 35, drops: [{ id: 7, chance: 0.35 }] }
+                { name: "Orc", hp: 100, atk: 15, def: 8, exp: 80, gold: 50, drops: [{ id: 6, chance: 0.4 }], image: "https://i.imgur.com/8Q5ZQ9J.png" },
+                { name: "Aranha Gigante", hp: 80, atk: 18, def: 5, exp: 70, gold: 40, drops: [{ id: 7, chance: 0.35 }], image: "https://i.imgur.com/9Q5ZQ9J.png" }
             ],
             'B': [
-                { name: "Minotauro", hp: 150, atk: 20, def: 15, exp: 120, gold: 80, drops: [{ id: 8, chance: 0.5 }] },
-                { name: "Necromante", hp: 100, atk: 25, def: 10, exp: 150, gold: 100, drops: [{ id: 9, chance: 0.45 }] }
+                { name: "Minotauro", hp: 150, atk: 25, def: 15, exp: 150, gold: 100, drops: [{ id: 8, chance: 0.5 }], image: "https://i.imgur.com/1Q5ZQ9J.png" },
+                { name: "Necromante", hp: 120, atk: 30, def: 10, exp: 180, gold: 120, drops: [{ id: 9, chance: 0.45 }], image: "https://i.imgur.com/2Q5ZQ9J.png" }
             ],
             'A': [
-                { name: "Demônio", hp: 200, atk: 30, def: 20, exp: 200, gold: 150, drops: [{ id: 10, chance: 0.6 }] },
-                { name: "Dragão Jovem", hp: 250, atk: 35, def: 25, exp: 250, gold: 200, drops: [{ id: 11, chance: 0.55 }] }
+                { name: "Demônio", hp: 250, atk: 40, def: 20, exp: 300, gold: 200, drops: [{ id: 10, chance: 0.6 }], image: "https://i.imgur.com/3Q5ZQ9J.png" },
+                { name: "Dragão Jovem", hp: 300, atk: 35, def: 25, exp: 350, gold: 250, drops: [{ id: 11, chance: 0.55 }], image: "https://i.imgur.com/4Q5ZQ9J.png" }
             ],
             'S': [
-                { name: "Anjo Caído", hp: 350, atk: 45, def: 30, exp: 350, gold: 300, drops: [{ id: 12, chance: 0.7 }] },
-                { name: "Titã", hp: 400, atk: 50, def: 35, exp: 400, gold: 350, drops: [{ id: 13, chance: 0.65 }] }
+                { name: "Anjo Caído", hp: 400, atk: 50, def: 30, exp: 500, gold: 400, drops: [{ id: 12, chance: 0.7 }], image: "https://i.imgur.com/5Q5ZQ9J.png" },
+                { name: "Titã", hp: 500, atk: 45, def: 35, exp: 600, gold: 500, drops: [{ id: 13, chance: 0.65 }], image: "https://i.imgur.com/6Q5ZQ9J.png" }
             ],
             'SS': [
-                { name: "Arauto do Fim", hp: 600, atk: 70, def: 50, exp: 800, gold: 500, drops: [{ id: 14, chance: 0.8 }] },
-                { name: "Dragão Ancestral", hp: 1000, atk: 80, def: 60, exp: 1500, gold: 1000, drops: [{ id: 15, chance: 1 }] }
+                { name: "Dragão Ancestral", hp: 1000, atk: 80, def: 50, exp: 2000, gold: 5000, drops: [{ id: 14, chance: 1 }], image: "https://i.imgur.com/7Q5ZQ9J.png" },
+                { name: "Arauto do Fim", hp: 1200, atk: 70, def: 60, exp: 2500, gold: 6000, drops: [{ id: 15, chance: 1 }], image: "https://i.imgur.com/8Q5ZQ9J.png" }
             ]
         };
 
         // Itens do Jogo (30 itens)
         const items = [
             // Armas (15 itens)
-            { id: 1, name: "Adaga de Goblin", type: "weapon", level: 1, atk: 10, price: 50 },
-            { id: 2, name: "Espada de Madeira", type: "weapon", level: 1, atk: 12, price: 60 },
-            { id: 3, name: "Cajado do Aprendiz", type: "weapon", level: 1, atk: 8, price: 40 },
-            { id: 4, name: "Espada de Aço", type: "weapon", level: 10, atk: 35, crit: 5, price: 200 },
-            { id: 5, name: "Machado de Batalha", type: "weapon", level: 15, atk: 45, price: 300 },
-            { id: 6, name: "Arco Longo", type: "weapon", level: 20, atk: 50, crit: 8, price: 400 },
-            { id: 7, name: "Lâmina do Caos", type: "weapon", level: 30, atk: 80, crit: 10, price: 1000 },
-            { id: 8, name: "Martelo de Guerra", type: "weapon", level: 35, atk: 90, price: 1200 },
-            { id: 9, name: "Espada Flamejante", type: "weapon", level: 40, atk: 100, crit: 15, price: 1500 },
-            { id: 10, name: "Garra do Dragão", type: "weapon", level: 50, atk: 120, crit: 20, price: 2000 },
-            { id: 11, name: "Lâmina Lunar", type: "weapon", level: 60, atk: 150, crit: 25, price: 3000 },
-            { id: 12, name: "Espada Sagrada", type: "weapon", level: 70, atk: 180, crit: 30, price: 4000 },
-            { id: 13, name: "Foice da Morte", type: "weapon", level: 80, atk: 220, crit: 35, price: 5000 },
-            { id: 14, name: "Martelo Celestial", type: "weapon", level: 90, atk: 250, crit: 40, price: 6000 },
-            { id: 15, name: "Espada do Apocalipse", type: "weapon", level: 100, atk: 300, crit: 50, price: 10000 },
+            { id: 1, name: "Adaga de Goblin", type: "weapon", level: 1, atk: 10, price: 50, image: "https://i.imgur.com/1Q5ZQ9O.png" },
+            { id: 2, name: "Espada Curta", type: "weapon", level: 3, atk: 15, price: 80, image: "https://i.imgur.com/2Q5ZQ9O.png" },
+            { id: 3, name: "Machado de Batalha", type: "weapon", level: 5, atk: 20, price: 120, image: "https://i.imgur.com/3Q5ZQ9O.png" },
+            { id: 4, name: "Espada de Aço", type: "weapon", level: 10, atk: 35, crit: 5, price: 200, image: "https://i.imgur.com/4Q5ZQ9O.png" },
+            { id: 5, name: "Martelo de Guerra", type: "weapon", level: 15, atk: 45, price: 350, image: "https://i.imgur.com/5Q5ZQ9O.png" },
+            { id: 6, name: "Lâmina Afiada", type: "weapon", level: 20, atk: 55, crit: 8, price: 500, image: "https://i.imgur.com/6Q5ZQ9O.png" },
+            { id: 7, name: "Lâmina do Caos", type: "weapon", level: 30, atk: 80, crit: 10, price: 1000, image: "https://i.imgur.com/7Q5ZQ9O.png" },
+            { id: 8, name: "Espada Flamejante", type: "weapon", level: 40, atk: 100, crit: 15, price: 2000, image: "https://i.imgur.com/8Q5ZQ9O.png" },
+            { id: 9, name: "Machado do Titã", type: "weapon", level: 50, atk: 120, price: 3000, image: "https://i.imgur.com/9Q5ZQ9O.png" },
+            { id: 10, name: "Espada Sagrada", type: "weapon", level: 60, atk: 150, crit: 20, price: 5000, image: "https://i.imgur.com/1Q5ZQ9O.png" },
+            { id: 11, name: "Garra do Dragão", type: "weapon", level: 70, atk: 180, crit: 25, price: 8000, image: "https://i.imgur.com/2Q5ZQ9O.png" },
+            { id: 12, name: "Lâmina da Lua", type: "weapon", level: 80, atk: 220, crit: 30, price: 12000, image: "https://i.imgur.com/3Q5ZQ9O.png" },
+            { id: 13, name: "Espada do Crepúsculo", type: "weapon", level: 90, atk: 250, crit: 35, price: 15000, image: "https://i.imgur.com/4Q5ZQ9O.png" },
+            { id: 14, name: "Garra do Fênix", type: "weapon", level: 95, atk: 280, crit: 40, price: 20000, image: "https://i.imgur.com/5Q5ZQ9O.png" },
+            { id: 15, name: "Espada do Infinito", type: "weapon", level: 100, atk: 350, crit: 50, price: 30000, image: "https://i.imgur.com/6Q5ZQ9O.png" },
             
             // Armaduras (10 itens)
-            { id: 16, name: "Couro Rústico", type: "armor", level: 1, def: 5, price: 40 },
-            { id: 17, name: "Túnica do Aprendiz", type: "armor", level: 5, def: 10, price: 80 },
-            { id: 18, name: "Armadura de Ferro", type: "armor", level: 15, def: 25, price: 300 },
-            { id: 19, name: "Cota de Malha", type: "armor", level: 25, def: 40, price: 600 },
-            { id: 20, name: "Armadura de Placas", type: "armor", level: 35, def: 60, price: 1000 },
-            { id: 21, name: "Manto das Sombras", type: "armor", level: 45, def: 80, price: 1500 },
-            { id: 22, name: "Armadura de Mithril", type: "armor", level: 55, def: 100, price: 2000 },
-            { id: 23, name: "Armadura Sagrada", type: "armor", level: 70, def: 120, price: 3000 },
-            { id: 24, name: "Armadura do Dragão", type: "armor", level: 80, def: 150, price: 4000 },
-            { id: 25, name: "Vestimenta do Eclipse", type: "armor", level: 90, def: 200, price: 5000 },
+            { id: 16, name: "Couro Rústico", type: "armor", level: 1, def: 5, price: 40, image: "https://i.imgur.com/1Q5ZQ9A.png" },
+            { id: 17, name: "Armadura de Couro", type: "armor", level: 5, def: 10, price: 100, image: "https://i.imgur.com/2Q5ZQ9A.png" },
+            { id: 18, name: "Armadura de Ferro", type: "armor", level: 15, def: 25, price: 300, image: "https://i.imgur.com/3Q5ZQ9A.png" },
+            { id: 19, name: "Cota de Malha", type: "armor", level: 25, def: 40, price: 600, image: "https://i.imgur.com/4Q5ZQ9A.png" },
+            { id: 20, name: "Armadura de Placas", type: "armor", level: 35, def: 60, price: 1000, image: "https://i.imgur.com/5Q5ZQ9A.png" },
+            { id: 21, name: "Manto das Sombras", type: "armor", level: 45, def: 80, price: 1500, image: "https://i.imgur.com/6Q5ZQ9A.png" },
+            { id: 22, name: "Armadura de Mithril", type: "armor", level: 55, def: 100, price: 2500, image: "https://i.imgur.com/7Q5ZQ9A.png" },
+            { id: 23, name: "Armadura Sagrada", type: "armor", level: 70, def: 120, price: 4000, image: "https://i.imgur.com/8Q5ZQ9A.png" },
+            { id: 24, name: "Armadura do Dragão", type: "armor", level: 85, def: 150, price: 7000, image: "https://i.imgur.com/9Q5ZQ9A.png" },
+            { id: 25, name: "Vestimenta do Eclipse", type: "armor", level: 100, def: 200, price: 10000, image: "https://i.imgur.com/1Q5ZQ9A.png" },
             
-            // Poções (5 itens)
-            { id: 26, name: "Poção de Cura", type: "potion", effect: "heal", amount: 50, price: 20 },
-            { id: 27, name: "Poção de Mana", type: "potion", effect: "mana", amount: 30, price: 30 },
-            { id: 28, name: "Poção de Força", type: "potion", effect: "str", amount: 5, price: 50 },
-            { id: 29, name: "Poção de Defesa", type: "potion", effect: "def", amount: 5, price: 50 },
-            { id: 30, name: "Poção de Velocidade", type: "potion", effect: "spd", amount: 5, price: 50 }
+            // Poções e consumíveis (5 itens)
+            { id: 26, name: "Poção de Cura", type: "potion", effect: "heal", amount: 50, price: 20, image: "https://i.imgur.com/1Q5ZQ9P.png" },
+            { id: 27, name: "Poção de Mana", type: "potion", effect: "mana", amount: 30, price: 30, image: "https://i.imgur.com/2Q5ZQ9P.png" },
+            { id: 28, name: "Poção de Força", type: "potion", effect: "buff", stat: "str", amount: 5, duration: 3, price: 50, image: "https://i.imgur.com/3Q5ZQ9P.png" },
+            { id: 29, name: "Poção de Defesa", type: "potion", effect: "buff", stat: "def", amount: 5, duration: 3, price: 50, image: "https://i.imgur.com/4Q5ZQ9P.png" },
+            { id: 30, name: "Poção de Velocidade", type: "potion", effect: "buff", stat: "spd", amount: 5, duration: 3, price: 50, image: "https://i.imgur.com/5Q5ZQ9P.png" }
         ];
 
-        // Estado da Batalha
+        // Estado do Jogo
         let currentEnemy = null;
         let playerTurn = true;
         let battleLog = [];
+        let activeBuffs = [];
+        let gameLoaded = false;
+        let inBattle = false;
+
+        // Elementos de áudio
+        const bgMusic = document.getElementById('bg-music');
+        const battleMusic = document.getElementById('battle-music');
+        const attackSound = document.getElementById('attack-sound');
+        const critSound = document.getElementById('crit-sound');
+        const healSound = document.getElementById('heal-sound');
+        const levelUpSound = document.getElementById('level-up-sound');
+        const portalSound = document.getElementById('portal-sound');
 
         // Inicialização do Jogo
         function initGame() {
+            // Carrega o jogo salvo se existir
+            loadGame();
+            
+            // Configura os eventos de áudio
+            setupAudio();
+            
+            // Atualiza a interface
             updatePlayerStats();
             renderInventory();
             renderShop();
-            updateQuests();
+            updateQuestDisplay();
+            
+            // Habilita os botões de atributo se houver pontos
+            updateStatButtons();
+            
+            // Inicia a música de fundo
+            if (player.settings.music) {
+                bgMusic.volume = 0.3;
+                bgMusic.play().catch(e => console.log("Autoplay bloqueado:", e));
+            }
+            
+            gameLoaded = true;
         }
 
-        // Atualiza a exibição dos status do jogador
+        // Configura os eventos de áudio
+        function setupAudio() {
+            // Configura os volumes
+            attackSound.volume = 0.5;
+            critSound.volume = 0.7;
+            healSound.volume = 0.4;
+            levelUpSound.volume = 0.6;
+            portalSound.volume = 0.5;
+            
+            // Configura o botão de som
+            document.getElementById('sound-toggle').addEventListener('click', toggleSound);
+        }
+
+        // Alterna o estado do som
+        function toggleSound() {
+            player.settings.sound = !player.settings.sound;
+            player.settings.music = !player.settings.music;
+            
+            const soundButton = document.getElementById('sound-toggle');
+            soundButton.textContent = player.settings.sound ? "🔊" : "🔇";
+            
+            if (player.settings.music) {
+                bgMusic.play().catch(e => console.log("Autoplay bloqueado:", e));
+            } else {
+                bgMusic.pause();
+                battleMusic.pause();
+            }
+            
+            saveGame();
+        }
+
+        // Carrega o jogo salvo
+        function loadGame() {
+            const savedGame = localStorage.getItem('reinosDosPortaisSave');
+            if (savedGame) {
+                try {
+                    const parsed = JSON.parse(savedGame);
+                    
+                    // Atualiza o jogador com os dados salvos
+                    Object.assign(player, parsed);
+                    
+                    // Garante que os valores não sejam menores que o mínimo
+                    player.hp = Math.max(1, Math.min(player.hp, player.maxHp));
+                    player.mp = Math.max(0, Math.min(player.mp, player.maxMp));
+                    
+                    addLog("Jogo carregado com sucesso!");
+                } catch (e) {
+                    console.error("Erro ao carregar o jogo:", e);
+                    addLog("Erro ao carregar o jogo. Começando novo jogo.");
+                }
+            } else {
+                addLog("Bem-vindo ao Reinos Além dos Portais!");
+            }
+        }
+
+        // Salva o jogo
+        function saveGame() {
+            if (!gameLoaded) return;
+            
+            try {
+                localStorage.setItem('reinosDosPortaisSave', JSON.stringify(player));
+            } catch (e) {
+                console.error("Erro ao salvar o jogo:", e);
+            }
+        }
+
+        // Atualiza os status do jogador na interface
         function updatePlayerStats() {
             document.getElementById('player-level').textContent = player.level;
             document.getElementById('player-exp').textContent = player.exp;
             document.getElementById('player-next-exp').textContent = player.nextExp;
-            document.getElementById('player-gold').textContent = player.gold;
+            document.getElementById('player-exp-bar').style.width = `${(player.exp / player.nextExp) * 100}%`;
             
             document.getElementById('player-hp').textContent = player.hp;
             document.getElementById('player-max-hp').textContent = player.maxHp;
@@ -455,61 +1035,174 @@
             document.getElementById('player-spd').textContent = player.stats.spd;
             document.getElementById('stat-points').textContent = player.statPoints;
             
+            document.getElementById('player-gold').textContent = player.gold;
+            
             document.getElementById('equip-weapon').textContent = player.equipment.weapon ? player.equipment.weapon.name : "Nenhuma";
             document.getElementById('equip-armor').textContent = player.equipment.armor ? player.equipment.armor.name : "Nenhuma";
+            
+            // Atualiza o estado dos botões de habilidade baseado no MP
+            updateSkillButtons();
+            
+            saveGame();
+        }
+
+        // Atualiza os botões de habilidade baseado no MP
+        function updateSkillButtons() {
+            const skillButtons = document.querySelectorAll('.action-button.skill');
+            skillButtons.forEach((button, index) => {
+                button.disabled = player.mp < player.skills[index].cost || !currentEnemy;
+            });
+            
+            document.querySelector('.action-button.heal').disabled = player.mp < player.skills[3].cost || !currentEnemy;
+        }
+
+        // Atualiza os botões de atributo
+        function updateStatButtons() {
+            document.getElementById('str-btn').disabled = player.statPoints <= 0;
+            document.getElementById('def-btn').disabled = player.statPoints <= 0;
+            document.getElementById('int-btn').disabled = player.statPoints <= 0;
+            document.getElementById('spd-btn').disabled = player.statPoints <= 0;
+        }
+
+        // Abre uma aba específica
+        function openTab(tabName) {
+            // Esconde todas as abas
+            document.querySelectorAll('.tab-content').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            
+            // Desmarca todos os botões de aba
+            document.querySelectorAll('.tab-button').forEach(button => {
+                button.classList.remove('active');
+            });
+            
+            // Mostra a aba selecionada
+            document.getElementById(tabName).classList.add('active');
+            
+            // Marca o botão da aba como ativo
+            document.querySelector(`.tab-button[onclick="openTab('${tabName}')"]`).classList.add('active');
+            
+            // Atualiza o conteúdo se necessário
+            if (tabName === 'inventory') {
+                renderInventory();
+            } else if (tabName === 'shop') {
+                renderShop();
+            } else if (tabName === 'quests') {
+                updateQuestDisplay();
+            }
         }
 
         // Entra em um portal e encontra um inimigo
         function enterPortal(rank) {
+            if (inBattle) {
+                addLog("Você já está em batalha!");
+                return;
+            }
+            
             const possibleEnemies = enemiesByRank[rank];
             if (!possibleEnemies || possibleEnemies.length === 0) {
                 addLog("Portal vazio... talvez você precise desbloquear este rank primeiro.");
                 return;
             }
             
+            // Toca o som do portal
+            if (player.settings.sound) {
+                portalSound.currentTime = 0;
+                portalSound.play();
+            }
+            
+            // Alterna para a aba de batalha
+            openTab('battle');
+            
+            // Seleciona um inimigo aleatório
             const randomIndex = Math.floor(Math.random() * possibleEnemies.length);
             currentEnemy = JSON.parse(JSON.stringify(possibleEnemies[randomIndex]));
             
             // Determina quem começa baseado na velocidade
-            const playerSpeed = player.stats.spd;
+            const playerSpeed = player.stats.spd + (activeBuffs.some(b => b.stat === 'spd') ? 
+                activeBuffs.find(b => b.stat === 'spd').amount : 0);
             const enemySpeed = Math.floor(currentEnemy.hp / 10); // Velocidade aproximada do inimigo
             
             playerTurn = playerSpeed >= enemySpeed;
             
+            // Configura a batalha
+            inBattle = true;
+            player.activeShield = false;
+            
+            // Atualiza a música
+            if (player.settings.music) {
+                bgMusic.pause();
+                battleMusic.currentTime = 0;
+                battleMusic.volume = 0.3;
+                battleMusic.play();
+            }
+            
             renderEnemy();
-            addLog(`Você encontrou um ${currentEnemy.name}! ${playerTurn ? "Você ataca primeiro!" : "O inimigo ataca primeiro!"}`);
+            addLog(`Você entrou no portal Rank ${rank} e encontrou um ${currentEnemy.name}!`);
+            addLog(playerTurn ? "Você ataca primeiro!" : "O inimigo ataca primeiro!");
+            
+            // Atualiza os botões de ação
+            updateSkillButtons();
+            document.getElementById('enemy-image').classList.add('shake');
+            setTimeout(() => {
+                document.getElementById('enemy-image').classList.remove('shake');
+            }, 500);
         }
 
         // Renderiza o inimigo na tela
         function renderEnemy() {
             if (!currentEnemy) {
-                document.getElementById('enemy-display').innerHTML = "<p>Nenhum inimigo encontrado. Entre em um portal para começar!</p>";
+                document.getElementById('enemy-name').textContent = "Nenhum inimigo";
+                document.getElementById('enemy-hp').textContent = "0";
+                document.getElementById('enemy-max-hp').textContent = "0";
+                document.getElementById('enemy-hp-bar').style.width = "0%";
+                document.getElementById('enemy-rank').textContent = "";
+                document.getElementById('enemy-image').src = "https://i.imgur.com/3ZQ9Z9J.png";
                 return;
             }
             
-            const enemyHTML = `
-                <h3>${currentEnemy.name}</h3>
-                <p>HP: ${currentEnemy.hp}</p>
-                <div class="hp-bar">
-                    <div class="hp-fill" style="width: ${(currentEnemy.hp / (currentEnemy.hp * 2)) * 100}%"></div>
-                </div>
-                <p>Rank: ${Object.keys(enemiesByRank).find(rank => 
-                    enemiesByRank[rank].some(e => e.name === currentEnemy.name))}</p>
-            `;
+            document.getElementById('enemy-name').textContent = currentEnemy.name;
+            document.getElementById('enemy-hp').textContent = currentEnemy.hp;
+            document.getElementById('enemy-max-hp').textContent = currentEnemy.hp * 2; // Para efeito visual
+            document.getElementById('enemy-hp-bar').style.width = `${(currentEnemy.hp / (currentEnemy.hp * 2)) * 100}%`;
             
-            document.getElementById('enemy-display').innerHTML = enemyHTML;
+            // Encontra o rank do inimigo
+            const enemyRank = Object.keys(enemiesByRank).find(rank => 
+                enemiesByRank[rank].some(e => e.name === currentEnemy.name));
+            document.getElementById('enemy-rank').textContent = `Rank ${enemyRank}`;
+            
+            // Atualiza a imagem do inimigo
+            document.getElementById('enemy-image').src = currentEnemy.image || "https://i.imgur.com/3ZQ9Z9J.png";
         }
 
         // Ataque básico do jogador
         function playerAttack() {
-            if (!currentEnemy || !playerTurn) return;
+            if (!currentEnemy || !playerTurn || !inBattle) return;
+            
+            // Toca o som de ataque
+            if (player.settings.sound) {
+                attackSound.currentTime = 0;
+                attackSound.play();
+            }
             
             const baseDamage = player.stats.str * 2 + (player.equipment.weapon ? player.equipment.weapon.atk : 0);
+            
+            // Aplica buffs de força
+            const strBuff = activeBuffs.find(b => b.stat === 'str');
+            const totalStr = player.stats.str + (strBuff ? strBuff.amount : 0);
+            
+            // Chance de crítico
             const critChance = player.stats.int * 0.5 + (player.equipment.weapon ? (player.equipment.weapon.crit || 0) : 0);
             const isCrit = Math.random() * 100 < critChance;
             
             let damage = baseDamage;
-            if (isCrit) damage *= 2;
+            if (isCrit) {
+                damage *= 2;
+                if (player.settings.sound) {
+                    critSound.currentTime = 0;
+                    critSound.play();
+                }
+            }
             
             // Aplica defesa do inimigo
             damage = Math.max(1, damage - currentEnemy.def);
@@ -519,11 +1212,11 @@
             
             addLog(`Você atacou o ${currentEnemy.name} causando ${damage} de dano${isCrit ? " (CRÍTICO!)" : ""}.`, isCrit ? "critical" : "damage");
             
-            // Atualiza progresso de missões
-            if (currentEnemy.name.includes("Goblin")) {
-                player.questProgress.goblins++;
-                updateQuests();
-            }
+            // Animação
+            document.getElementById('enemy-image').classList.add('shake');
+            setTimeout(() => {
+                document.getElementById('enemy-image').classList.remove('shake');
+            }, 500);
             
             if (currentEnemy.hp <= 0) {
                 enemyDefeated();
@@ -533,17 +1226,23 @@
             }
             
             renderEnemy();
+            updatePlayerStats();
         }
 
         // Inimigo ataca
         function enemyTurn() {
-            if (!currentEnemy || playerTurn) return;
+            if (!currentEnemy || playerTurn || !inBattle) return;
             
             let damage = currentEnemy.atk;
             
             // Aplica defesa do jogador
             const playerDefense = player.stats.def * 1.5 + (player.equipment.armor ? player.equipment.armor.def : 0);
-            damage = Math.max(1, damage - playerDefense);
+            
+            // Aplica buffs de defesa
+            const defBuff = activeBuffs.find(b => b.stat === 'def');
+            const totalDef = playerDefense + (defBuff ? defBuff.amount * 1.5 : 0);
+            
+            damage = Math.max(1, damage - totalDef);
             
             // Verifica se o jogador tem escudo ativo
             if (player.activeShield) {
@@ -557,6 +1256,12 @@
             
             addLog(`O ${currentEnemy.name} atacou você causando ${damage} de dano.`, "damage");
             
+            // Animação
+            document.querySelector('.player-panel').classList.add('shake');
+            setTimeout(() => {
+                document.querySelector('.player-panel').classList.remove('shake');
+            }, 500);
+            
             if (player.hp <= 0) {
                 playerDefeated();
             } else {
@@ -568,7 +1273,7 @@
 
         // Usa uma habilidade
         function useSkill(skillIndex) {
-            if (!currentEnemy || !playerTurn) return;
+            if (!currentEnemy || !playerTurn || !inBattle) return;
             
             const skill = player.skills[skillIndex];
             if (player.mp < skill.cost) {
@@ -577,6 +1282,17 @@
             }
             
             player.mp -= skill.cost;
+            
+            // Toca o som da habilidade
+            if (player.settings.sound) {
+                if (skillIndex === 3) { // Cura
+                    healSound.currentTime = 0;
+                    healSound.play();
+                } else {
+                    attackSound.currentTime = 0;
+                    attackSound.play();
+                }
+            }
             
             switch (skillIndex) {
                 case 0: // Golpe Certeiro
@@ -614,13 +1330,25 @@
                     const critDamage = (player.stats.str * 2 * 2) - Math.floor(currentEnemy.def * 0.7);
                     currentEnemy.hp -= critDamage;
                     addLog(`Você usou Golpe Crítico causando ${critDamage} de dano devastador!`, "critical");
+                    
+                    if (player.settings.sound) {
+                        critSound.currentTime = 0;
+                        critSound.play();
+                    }
                     break;
             }
             
-            // Atualiza progresso de missões
-            if (currentEnemy.name.includes("Goblin")) {
-                player.questProgress.goblins++;
-                updateQuests();
+            // Animação
+            if (skillIndex !== 1 && skillIndex !== 3) { // Não anima escudo ou cura
+                document.getElementById('enemy-image').classList.add('shake');
+                setTimeout(() => {
+                    document.getElementById('enemy-image').classList.remove('shake');
+                }, 500);
+            } else if (skillIndex === 3) {
+                document.querySelector('.player-panel').classList.add('pulse');
+                setTimeout(() => {
+                    document.querySelector('.player-panel').classList.remove('pulse');
+                }, 500);
             }
             
             if (currentEnemy.hp <= 0) {
@@ -633,6 +1361,48 @@
             
             updatePlayerStats();
             renderEnemy();
+        }
+
+        // Inimigo derrotado
+        function enemyTurn() {
+            if (!currentEnemy || playerTurn || !inBattle) return;
+            
+            let damage = currentEnemy.atk;
+            
+            // Aplica defesa do jogador
+            const playerDefense = player.stats.def * 1.5 + (player.equipment.armor ? player.equipment.armor.def : 0);
+            
+            // Aplica buffs de defesa
+            const defBuff = activeBuffs.find(b => b.stat === 'def');
+            const totalDef = playerDefense + (defBuff ? defBuff.amount * 1.5 : 0);
+            
+            damage = Math.max(1, damage - totalDef);
+            
+            // Verifica se o jogador tem escudo ativo
+            if (player.activeShield) {
+                damage = Math.floor(damage * 0.5);
+                player.activeShield = false;
+                addLog("Seu Escudo Mágico reduziu o dano recebido!", "heal");
+            }
+            
+            player.hp -= damage;
+            if (player.hp < 0) player.hp = 0;
+            
+            addLog(`O ${currentEnemy.name} atacou você causando ${damage} de dano.`, "damage");
+            
+            // Animação
+            document.querySelector('.player-panel').classList.add('shake');
+            setTimeout(() => {
+                document.querySelector('.player-panel').classList.remove('shake');
+            }, 500);
+            
+            if (player.hp <= 0) {
+                playerDefeated();
+            } else {
+                playerTurn = true;
+            }
+            
+            updatePlayerStats();
         }
 
         // Inimigo derrotado
@@ -652,32 +1422,34 @@
                     player.inventory.push(droppedItem);
                     addLog(`O ${currentEnemy.name} deixou cair ${droppedItem.name}!`, "heal");
                     renderInventory();
-                    
-                    // Atualiza progresso de missões (cristais)
-                    if (droppedItem.name.includes("Cristal")) {
-                        player.questProgress.crystals++;
-                        updateQuests();
-                    }
                 }
             }
             
-            // Verifica se era um boss rank B
-            const enemyRank = Object.keys(enemiesByRank).find(rank => 
-                enemiesByRank[rank].some(e => e.name === currentEnemy.name));
-            
-            if (enemyRank === 'B' && currentEnemy.name.includes("Boss")) {
-                player.questProgress.boss++;
-                updateQuests();
-            }
+            // Atualiza missões
+            updateQuests(currentEnemy);
             
             // Verifica level up
             checkLevelUp();
             
-            currentEnemy = null;
-            playerTurn = true;
+            // Fim da batalha
+            endBattle();
             
-            updatePlayerStats();
-            renderEnemy();
+            // Mostra modal de vitória
+            showVictoryModal(currentEnemy, expGained, goldGained);
+        }
+
+        // Mostra o modal de vitória
+        function showVictoryModal(enemy, exp, gold) {
+            document.getElementById('defeated-enemy').textContent = enemy.name;
+            const rewardsList = document.getElementById('victory-rewards');
+            rewardsList.innerHTML = `
+                <li>EXP: ${exp}</li>
+                <li>Ouro: ${gold}</li>
+                ${enemy.drops && Math.random() < enemy.drops[0].chance ? 
+                    `<li>Item: ${items.find(i => i.id === enemy.drops[0].id).name}</li>` : ''}
+            `;
+            
+            openModal('victory-modal');
         }
 
         // Jogador derrotado
@@ -690,13 +1462,458 @@
             player.gold = Math.floor(player.gold / 2);
             player.inventory = [];
             
-            currentEnemy = null;
-            playerTurn = true;
+            // Fim da batalha
+            endBattle();
+            
+            // Mostra modal de game over
+            openModal('game-over-modal');
             
             updatePlayerStats();
-            renderEnemy();
             renderInventory();
         }
 
+        // Termina a batalha
+        function endBattle() {
+            inBattle = false;
+            currentEnemy = null;
+            playerTurn = true;
+            
+            // Remove buffs que terminaram
+            activeBuffs = activeBuffs.filter(buff => --buff.duration > 0);
+            
+            // Volta a música normal
+            if (player.settings.music) {
+                battleMusic.pause();
+                bgMusic.currentTime = 0;
+                bgMusic.play();
+            }
+            
+            renderEnemy();
+            updatePlayerStats();
+        }
+
+        // Foge da batalha
+        function fleeBattle() {
+            if (!inBattle) return;
+            
+            const escapeChance = 0.7 + (player.stats.spd * 0.01);
+            
+            if (Math.random() < escapeChance) {
+                addLog("Você fugiu da batalha com sucesso!");
+                endBattle();
+            } else {
+                addLog("Falha ao tentar fugir!");
+                playerTurn = false;
+                setTimeout(enemyTurn, 1000);
+            }
+        }
+
         // Verifica se o jogador subiu de nível
-        function
+        function checkLevelUp() {
+            if (player.exp >= player.nextExp) {
+                player.level++;
+                player.exp -= player.nextExp;
+                player.nextExp = player.level * 100;
+                player.statPoints += 5;
+                
+                // Aumenta status base
+                player.maxHp += 10 + player.stats.def * 0.5;
+                player.maxMp += 5 + player.stats.int * 0.3;
+                player.hp = player.maxHp;
+                player.mp = player.maxMp;
+                
+                // Toca som de level up
+                if (player.settings.sound) {
+                    levelUpSound.currentTime = 0;
+                    levelUpSound.play();
+                }
+                
+                // Mostra modal de level up
+                document.getElementById('new-level').textContent = player.level;
+                openModal('level-up-modal');
+                
+                // Verifica se subiu mais de um nível de uma vez
+                if (player.exp >= player.nextExp) {
+                    checkLevelUp();
+                }
+            }
+            
+            updatePlayerStats();
+            updateStatButtons();
+        }
+
+        // Aumenta um atributo
+        function increaseStat(stat) {
+            if (player.statPoints <= 0) return;
+            
+            player.stats[stat]++;
+            player.statPoints--;
+            
+            // Atualiza HP/MP máximo se for defesa ou inteligência
+            if (stat === 'def') {
+                player.maxHp = 100 + (player.stats.def * 5) + (player.equipment.armor ? player.equipment.armor.def * 2 : 0);
+            } else if (stat === 'int') {
+                player.maxMp = 50 + (player.stats.int * 3);
+            }
+            
+            updatePlayerStats();
+            updateStatButtons();
+        }
+
+        // Renderiza o inventário
+        function renderInventory() {
+            const inventoryGrid = document.getElementById('inventory-items');
+            inventoryGrid.innerHTML = '';
+            
+            if (player.inventory.length === 0) {
+                inventoryGrid.innerHTML = '<p>Seu inventário está vazio.</p>';
+                return;
+            }
+            
+            player.inventory.forEach(item => {
+                const itemCard = document.createElement('div');
+                itemCard.className = 'item-card';
+                itemCard.onclick = () => showItemDetails(item);
+                
+                let itemHTML = `<img src="${item.image || 'https://i.imgur.com/3ZQ9Z9J.png'}" alt="${item.name}">`;
+                itemHTML += `<h4>${item.name}</h4>`;
+                
+                if (item.type === 'weapon') {
+                    itemHTML += `<p>ATK: +${item.atk}</p>`;
+                    if (item.crit) itemHTML += `<p>Crítico: +${item.crit}%</p>`;
+                } else if (item.type === 'armor') {
+                    itemHTML += `<p>DEF: +${item.def}</p>`;
+                } else if (item.type === 'potion') {
+                    if (item.effect === 'heal') {
+                        itemHTML += `<p>Cura +${item.amount} HP</p>`;
+                    } else if (item.effect === 'mana') {
+                        itemHTML += `<p>Recupera +${item.amount} MP</p>`;
+                    } else if (item.effect === 'buff') {
+                        itemHTML += `<p>+${item.amount} ${statName(item.stat)} por ${item.duration} turnos</p>`;
+                    }
+                }
+                
+                itemHTML += `<p>Nível: ${item.level}</p>`;
+                
+                itemCard.innerHTML = itemHTML;
+                inventoryGrid.appendChild(itemCard);
+            });
+        }
+
+        // Mostra detalhes do item em um modal
+        function showItemDetails(item) {
+            document.getElementById('item-modal-title').textContent = item.name;
+            const modalContent = document.getElementById('item-modal-content');
+            
+            let itemHTML = `<img src="${item.image || 'https://i.imgur.com/3ZQ9Z9J.png'}" alt="${item.name}" style="width: 100px; margin: 0 auto 20px; display: block;">`;
+            
+            if (item.type === 'weapon') {
+                itemHTML += `<p><strong>Tipo:</strong> Arma</p>`;
+                itemHTML += `<p><strong>Ataque:</strong> +${item.atk}</p>`;
+                if (item.crit) itemHTML += `<p><strong>Crítico:</strong> +${item.crit}%</p>`;
+                itemHTML += `<p><strong>Nível requerido:</strong> ${item.level}</p>`;
+                
+                itemHTML += `<div class="item-actions">`;
+                itemHTML += `<button onclick="equipItem(${item.id}); closeModal('item-modal')">Equipar</button>`;
+                itemHTML += `</div>`;
+            } else if (item.type === 'armor') {
+                itemHTML += `<p><strong>Tipo:</strong> Armadura</p>`;
+                itemHTML += `<p><strong>Defesa:</strong> +${item.def}</p>`;
+                itemHTML += `<p><strong>Nível requerido:</strong> ${item.level}</p>`;
+                
+                itemHTML += `<div class="item-actions">`;
+                itemHTML += `<button onclick="equipItem(${item.id}); closeModal('item-modal')">Equipar</button>`;
+                itemHTML += `</div>`;
+            } else if (item.type === 'potion') {
+                if (item.effect === 'heal') {
+                    itemHTML += `<p><strong>Tipo:</strong> Poção de Cura</p>`;
+                    itemHTML += `<p><strong>Efeito:</strong> Restaura ${item.amount} HP</p>`;
+                } else if (item.effect === 'mana') {
+                    itemHTML += `<p><strong>Tipo:</strong> Poção de Mana</p>`;
+                    itemHTML += `<p><strong>Efeito:</strong> Restaura ${item.amount} MP</p>`;
+                } else if (item.effect === 'buff') {
+                    itemHTML += `<p><strong>Tipo:</strong> Poção de ${statName(item.stat)}</p>`;
+                    itemHTML += `<p><strong>Efeito:</strong> +${item.amount} ${statName(item.stat)} por ${item.duration} turnos</p>`;
+                }
+                
+                itemHTML += `<div class="item-actions">`;
+                itemHTML += `<button onclick="useItem(${item.id}); closeModal('item-modal')">Usar</button>`;
+                itemHTML += `</div>`;
+            }
+            
+            modalContent.innerHTML = itemHTML;
+            openModal('item-modal');
+        }
+
+        // Retorna o nome completo do atributo
+        function statName(stat) {
+            const names = {
+                'str': 'Força',
+                'def': 'Defesa',
+                'int': 'Inteligência',
+                'spd': 'Velocidade'
+            };
+            return names[stat] || stat;
+        }
+
+        // Renderiza a loja
+        function renderShop() {
+            const shopGrid = document.getElementById('shop-items');
+            shopGrid.innerHTML = '';
+            
+            // Filtra itens que o jogador pode comprar (nível <= player.level)
+            const availableItems = items.filter(item => item.level <= player.level);
+            
+            if (availableItems.length === 0) {
+                shopGrid.innerHTML = '<p>Nenhum item disponível na loja no momento.</p>';
+                return;
+            }
+            
+            availableItems.forEach(item => {
+                const itemCard = document.createElement('div');
+                itemCard.className = 'item-card';
+                itemCard.onclick = () => showItemDetails(item);
+                
+                let itemHTML = `<img src="${item.image || 'https://i.imgur.com/3Z5ZQ9J.png'}" alt="${item.name}">`;
+                itemHTML += `<h4>${item.name}</h4>`;
+                
+                if (item.type === 'weapon') {
+                    itemHTML += `<p>ATK: +${item.atk}</p>`;
+                    if (item.crit) itemHTML += `<p>Crítico: +${item.crit}%</p>`;
+                } else if (item.type === 'armor') {
+                    itemHTML += `<p>DEF: +${item.def}</p>`;
+                } else if (item.type === 'potion') {
+                    if (item.effect === 'heal') {
+                        itemHTML += `<p>Cura +${item.amount} HP</p>`;
+                    } else if (item.effect === 'mana') {
+                        itemHTML += `<p>Recupera +${item.amount} MP</p>`;
+                    } else if (item.effect === 'buff') {
+                        itemHTML += `<p>+${item.amount} ${statName(item.stat)}</p>`;
+                    }
+                }
+                
+                itemHTML += `<p>Nível: ${item.level}</p>`;
+                itemHTML += `<p>Preço: ${item.price} <img src="https://i.imgur.com/6Q5ZQ9O.png" alt="Gold" style="width: 16px; vertical-align: middle;"></p>`;
+                
+                itemHTML += `<div class="item-actions">`;
+                itemHTML += `<button onclick="buyItem(${item.id})" ${player.gold < item.price ? 'disabled' : ''}>Comprar</button>`;
+                itemHTML += `</div>`;
+                
+                itemCard.innerHTML = itemHTML;
+                shopGrid.appendChild(itemCard);
+            });
+        }
+
+        // Compra um item da loja
+        function buyItem(itemId) {
+            const item = items.find(i => i.id === itemId);
+            if (!item) return;
+            
+            if (player.gold >= item.price) {
+                player.gold -= item.price;
+                player.inventory.push(item);
+                addLog(`Você comprou ${item.name} por ${item.price} de ouro.`, "heal");
+                
+                updatePlayerStats();
+                renderInventory();
+                renderShop();
+            } else {
+                addLog("Você não tem ouro suficiente para comprar este item!");
+            }
+        }
+
+        // Equipa um item
+        function equipItem(itemId) {
+            const itemIndex = player.inventory.findIndex(i => i.id === itemId);
+            if (itemIndex === -1) return;
+            
+            const item = player.inventory[itemIndex];
+            
+            if (item.type === 'weapon') {
+                // Adiciona a arma atual de volta ao inventário se houver
+                if (player.equipment.weapon) {
+                    player.inventory.push(player.equipment.weapon);
+                }
+                player.equipment.weapon = item;
+                // Remove do inventário
+                player.inventory.splice(itemIndex, 1);
+            } else if (item.type === 'armor') {
+                if (player.equipment.armor) {
+                    player.inventory.push(player.equipment.armor);
+                }
+                player.equipment.armor = item;
+                player.inventory.splice(itemIndex, 1);
+                
+                // Atualiza HP máximo pois a defesa pode ter mudado
+                player.maxHp = 100 + (player.stats.def * 5) + (player.equipment.armor ? player.equipment.armor.def * 2 : 0);
+                if (player.hp > player.maxHp) player.hp = player.maxHp;
+            }
+            
+            addLog(`Você equipou ${item.name}.`, "heal");
+            
+            updatePlayerStats();
+            renderInventory();
+        }
+
+        // Usa um item (poção)
+        function useItem(itemId) {
+            const itemIndex = player.inventory.findIndex(i => i.id === itemId);
+            if (itemIndex === -1) return;
+            
+            const item = player.inventory[itemIndex];
+            
+            if (item.type === 'potion') {
+                if (item.effect === 'heal') {
+                    player.hp = Math.min(player.maxHp, player.hp + item.amount);
+                    addLog(`Você usou ${item.name} e recuperou ${item.amount} de HP.`, "heal");
+                    
+                    if (player.settings.sound) {
+                        healSound.currentTime = 0;
+                        healSound.play();
+                    }
+                } else if (item.effect === 'mana') {
+                    player.mp = Math.min(player.maxMp, player.mp + item.amount);
+                    addLog(`Você usou ${item.name} e recuperou ${item.amount} de MP.`, "heal");
+                } else if (item.effect === 'buff') {
+                    // Remove buffs antigos do mesmo tipo
+                    activeBuffs = activeBuffs.filter(b => b.stat !== item.stat);
+                    
+                    // Adiciona novo buff
+                    activeBuffs.push({
+                        stat: item.stat,
+                        amount: item.amount,
+                        duration: item.duration
+                    });
+                    
+                    addLog(`Você usou ${item.name} e ganhou +${item.amount} ${statName(item.stat)} por ${item.duration} turnos!`, "heal");
+                }
+                
+                // Remove o item do inventário
+                player.inventory.splice(itemIndex, 1);
+                
+                updatePlayerStats();
+                renderInventory();
+            }
+        }
+
+        // Atualiza as missões com base no inimigo derrotado
+        function updateQuests(enemy) {
+            // Missão de goblins
+            if (enemy.name === "Goblin" && player.quests.goblins.current < player.quests.goblins.required) {
+                player.quests.goblins.current++;
+            }
+            
+            // Missão de cristais (drop de slimes)
+            if (enemy.name === "Slime" && player.quests.crystals.current < player.quests.crystals.required) {
+                player.quests.crystals.current++;
+            }
+            
+            // Missão de boss (rank B ou superior)
+            const enemyRank = Object.keys(enemiesByRank).find(rank => 
+                enemiesByRank[rank].some(e => e.name === enemy.name));
+            
+            if (['B', 'A', 'S', 'SS'].includes(enemyRank) {
+                player.quests.boss.current = Math.min(player.quests.boss.current + 1, player.quests.boss.required);
+            }
+            
+            updateQuestDisplay();
+        }
+
+        // Atualiza a exibição das missões
+        function updateQuestDisplay() {
+            // Missão de goblins
+            document.getElementById('quest-goblins').textContent = player.quests.goblins.current;
+            document.getElementById('quest-goblins-bar').style.width = 
+                `${(player.quests.goblins.current / player.quests.goblins.required) * 100}%`;
+            
+            const claimGoblinsBtn = document.getElementById('claim-goblins');
+            claimGoblinsBtn.disabled = 
+                player.quests.goblins.current < player.quests.goblins.required || 
+                player.quests.goblins.claimed;
+            
+            // Missão de cristais
+            document.getElementById('quest-crystals').textContent = player.quests.crystals.current;
+            document.getElementById('quest-crystals-bar').style.width = 
+                `${(player.quests.crystals.current / player.quests.crystals.required) * 100}%`;
+            
+            const claimCrystalsBtn = document.getElementById('claim-crystals');
+            claimCrystalsBtn.disabled = 
+                player.quests.crystals.current < player.quests.crystals.required || 
+                player.quests.crystals.claimed;
+            
+            // Missão de boss
+            document.getElementById('quest-boss').textContent = player.quests.boss.current;
+            document.getElementById('quest-boss-bar').style.width = 
+                `${(player.quests.boss.current / player.quests.boss.required) * 100}%`;
+            
+            const claimBossBtn = document.getElementById('claim-boss');
+            claimBossBtn.disabled = 
+                player.quests.boss.current < player.quests.boss.required || 
+                player.quests.boss.claimed;
+        }
+
+        // Reclama a recompensa de uma missão
+        function claimQuest(questType) {
+            const quest = player.quests[questType];
+            
+            if (quest.current < quest.required || quest.claimed) return;
+            
+            switch (questType) {
+                case 'goblins':
+                    player.gold += 500;
+                    player.inventory.push(items.find(i => i.id === 26)); // Poção de cura
+                    addLog("Você completou a missão 'Derrote Goblins' e ganhou 500 de ouro e uma Poção de Cura!", "heal");
+                    break;
+                    
+                case 'crystals':
+                    player.gold += 1000;
+                    player.inventory.push(items.find(i => i.id === 18)); // Armadura de Ferro
+                    addLog("Você completou a missão 'Colete Cristais' e ganhou 1000 de ouro e uma Armadura de Ferro!", "heal");
+                    break;
+                    
+                case 'boss':
+                    player.gold += 3000;
+                    player.inventory.push(items.find(i => i.id === 8)); // Espada Flamejante
+                    addLog("Você completou a missão 'Derrote um Boss' e ganhou 3000 de ouro e uma Espada Flamejante!", "heal");
+                    break;
+            }
+            
+            quest.claimed = true;
+            updateQuestDisplay();
+            updatePlayerStats();
+            renderInventory();
+        }
+
+        // Adiciona uma mensagem ao log
+        function addLog(message, type = "") {
+            const logEntry = document.createElement('div');
+            logEntry.className = `log-entry ${type}`;
+            logEntry.textContent = message;
+            
+            const logContainer = document.getElementById('battle-log');
+            logContainer.appendChild(logEntry);
+            
+            // Rolagem automática para a mensagem mais recente
+            logContainer.scrollTop = logContainer.scrollHeight;
+            
+            // Limita o número de mensagens no log
+            if (logContainer.children.length > 100) {
+                logContainer.removeChild(logContainer.children[0]);
+            }
+        }
+
+        // Abre um modal
+        function openModal(modalId) {
+            document.getElementById(modalId).style.display = 'flex';
+        }
+
+        // Fecha um modal
+        function closeModal(modalId) {
+            document.getElementById(modalId).style.display = 'none';
+        }
+
+        // Inicializa o jogo quando a página carrega
+        window.onload = initGame;
+    </script>
+</body>
+</html>
